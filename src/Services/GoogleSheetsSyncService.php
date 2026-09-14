@@ -4,15 +4,15 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Config\GoogleSheets;
-use App\Interfaces\GoogleSheetsRepositoryInterface;
+use App\Repositories\GoogleSheetsRepository;
 use App\Repositories\UserRepository;
 
 class GoogleSheetsSyncService
 {
-    private GoogleSheetsRepositoryInterface $sheetsRepo;
+    private GoogleSheetsRepository $sheetsRepo;
     private UserRepository $userRepo;
 
-    public function __construct(GoogleSheetsRepositoryInterface $sheetsRepo, UserRepository $userRepo)
+    public function __construct(GoogleSheetsRepository $sheetsRepo, UserRepository $userRepo)
     {
         $this->sheetsRepo = $sheetsRepo;
         $this->userRepo = $userRepo;
@@ -57,10 +57,8 @@ class GoogleSheetsSyncService
 
             if ($existingRow > 0) {
                 $this->sheetsRepo->updateRow($existingRow, $row);
-                error_log("[SHEETS] Updated row {$existingRow}: report_id=" . $report['id']);
             } else {
                 $this->sheetsRepo->appendRow($row);
-                error_log("[SHEETS] Appended new row: report_id=" . $report['id']);
             }
 
             return true;
@@ -89,7 +87,6 @@ class GoogleSheetsSyncService
             $existingIds = $this->sheetsRepo->getAllReportIds();
             $existingIdValues = array_values($existingIds);
         } catch (\Exception $e) {
-            error_log("[SHEETS] Backfill failed to read existing IDs: " . $e->getMessage());
             $result['error'] = 'Failed to read spreadsheet: ' . $e->getMessage();
             return $result;
         }
@@ -130,7 +127,6 @@ class GoogleSheetsSyncService
                 }
                 $result['synced']++;
             } catch (\Exception $e) {
-                error_log("[SHEETS] Backfill failed: report_id={$reportId} error=" . $e->getMessage());
                 $result['failed']++;
             }
         }

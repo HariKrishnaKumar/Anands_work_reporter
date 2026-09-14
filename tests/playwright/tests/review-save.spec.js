@@ -1,6 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
+const { clickAddReport } = require('./helpers');
 
 test.describe('TEST 4-6 — Full Add/Review/Save Flow', () => {
   test('complete add-report-save-success flow', async ({ page }) => {
@@ -9,7 +10,7 @@ test.describe('TEST 4-6 — Full Add/Review/Save Flow', () => {
     await page.waitForURL('**/home');
     
     // Click + to add report
-    await page.click('.nav-item-add');
+    await clickAddReport(page);
     await page.waitForURL('**/report/add');
     
     // TEST 4: Enter description
@@ -51,7 +52,7 @@ test.describe('TEST 7 — Confirmation Modal', () => {
     // Setup: login and get to review page
     await page.goto('dev-login');
     await page.waitForURL('**/home');
-    await page.click('.nav-item-add');
+    await clickAddReport(page);
     await page.waitForURL('**/report/add');
     
     await page.fill('#description', 'Test confirmation flow - writing tests and fixing bugs in the application codebase.');

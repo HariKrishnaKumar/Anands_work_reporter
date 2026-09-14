@@ -16,11 +16,15 @@ test.describe('TEST 2 — Home / My Reports', () => {
     // Greeting subtitle
     await expect(page.locator('.greeting-subtitle')).toContainText('submitted work');
     
-    // Bottom navigation exists
-    await expect(page.locator('.bottom-nav')).toBeVisible();
-    
-    // + button exists
-    await expect(page.locator('.nav-item-add')).toBeVisible();
+    // Navigation exists (bottom nav on mobile, sidebar on tablet+)
+    const viewportWidth = page.viewportSize()?.width || 390;
+    if (viewportWidth < 768) {
+      await expect(page.locator('.bottom-nav')).toBeVisible();
+      await expect(page.locator('.nav-item-add')).toBeVisible();
+    } else {
+      await expect(page.locator('.sidebar')).toBeVisible();
+      await expect(page.locator('.sidebar-nav-item').first()).toBeVisible();
+    }
     
     // Quick action card exists
     await expect(page.locator('.quick-action')).toContainText('Add Today');

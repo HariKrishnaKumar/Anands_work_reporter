@@ -15,11 +15,12 @@ use App\Config\GoogleSheets;
 class ReportController
 {
     private WorkReportService $reportService;
+    private FileStorageService $fileService;
 
     public function __construct()
     {
         $repo = new WorkReportRepository();
-        $fileService = new FileStorageService($repo);
+        $this->fileService = new FileStorageService($repo);
 
         $sheetsSyncService = null;
         if (GoogleSheets::isEnabled()) {
@@ -29,7 +30,7 @@ class ReportController
             );
         }
 
-        $this->reportService = new WorkReportService($repo, $fileService, $sheetsSyncService);
+        $this->reportService = new WorkReportService($repo, $this->fileService, $sheetsSyncService);
     }
 
     public function add(): void
@@ -78,11 +79,9 @@ class ReportController
         // Stage uploaded files to persistent temp so they survive across requests
         $files = $_FILES['files'] ?? null;
         if ($files && !empty($files['tmp_name'][0])) {
-            $fileService = new FileStorageService(new WorkReportRepository());
-            $fileValidation = $fileService->validateFiles($files);
-            error_log("[PREVIEW] valid=" . count($fileValidation['valid']) . " errors=" . json_encode($fileValidation['errors']));
+            $fileValidation = $this->fileService->validateFiles($files);
             if (!empty($fileValidation['valid'])) {
-                $stagedPaths = $fileService->stageFiles($fileValidation['valid']);
+                $stagedPaths = $this->fileService->stageFiles($fileValidation['valid']);
                 $_SESSION['staged_files'] = $stagedPaths;
 
                 // Store metadata for review display

@@ -1,4 +1,4 @@
-// @ts-check
+﻿// @ts-check
 const { test, expect } = require('@playwright/test');
 
 test.describe('TEST 13 — Responsive Testing', () => {
@@ -23,14 +23,27 @@ test.describe('TEST 13 — Responsive Testing', () => {
       const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
       expect(bodyWidth).toBeLessThanOrEqual(vp.width + 1);
       
-      // + button visible
-      await expect(page.locator('.nav-item-add')).toBeVisible();
+      if (vp.width < 768) {
+        // MOBILE: bottom nav visible, no sidebar
+        await expect(page.locator('.bottom-nav')).toBeVisible();
+        await expect(page.locator('.nav-item-add')).toBeVisible();
+        await expect(page.locator('.sidebar')).toBeHidden();
+        
+        // Navigate to add report via bottom nav
+        await page.click('.nav-item-add');
+      } else {
+        // TABLET / DESKTOP: sidebar visible, bottom nav hidden
+        await expect(page.locator('.sidebar')).toBeVisible();
+        await expect(page.locator('.bottom-nav')).toBeHidden();
+        await expect(page.locator('.app-header')).toBeHidden();
+        
+        // Sidebar nav items visible
+        await expect(page.locator('.sidebar-nav-item').first()).toBeVisible();
+        
+        // Navigate to add report via sidebar
+        await page.click('.sidebar-nav-item:nth-child(2)');
+      }
       
-      // Bottom nav visible
-      await expect(page.locator('.bottom-nav')).toBeVisible();
-      
-      // Navigate to add report
-      await page.click('.nav-item-add');
       await page.waitForURL('**/report/add');
       
       // No horizontal overflow on add page

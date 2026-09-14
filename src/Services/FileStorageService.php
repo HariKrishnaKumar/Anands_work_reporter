@@ -121,11 +121,7 @@ class FileStorageService
         $staged = [];
         foreach ($validFiles as $i => $file) {
             $dest = $this->tempDir . '/' . $sessionId . '_' . $i . '_' . bin2hex(random_bytes(8));
-            if (!is_dir($this->tempDir)) {
-                mkdir($this->tempDir, 0755, true);
-            }
             $ok = @move_uploaded_file($file['tmp_name'], $dest);
-            error_log("[STAGE] $i ok=$ok tmp={$file['tmp_name']} dest=$dest");
             if ($ok) {
                 $staged[] = $dest;
             }
@@ -138,10 +134,8 @@ class FileStorageService
      */
     public function storeStagedFiles(array $stagedPaths, int $reportId, int $userId): void
     {
-        error_log("[STORE] paths=" . count($stagedPaths));
         foreach ($stagedPaths as $path) {
             if (!file_exists($path)) {
-                error_log("[STORE] MISSING: $path");
                 continue;
             }
 

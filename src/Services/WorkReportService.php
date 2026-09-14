@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Interfaces\WorkReportRepositoryInterface;
+use App\Repositories\WorkReportRepository;
 
 class WorkReportService
 {
-    private WorkReportRepositoryInterface $reportRepo;
+    private WorkReportRepository $reportRepo;
     private FileStorageService $fileStorageService;
     private ?GoogleSheetsSyncService $sheetsSyncService = null;
 
-    public function __construct(WorkReportRepositoryInterface $reportRepo, FileStorageService $fileStorageService, ?GoogleSheetsSyncService $sheetsSyncService = null)
+    public function __construct(WorkReportRepository $reportRepo, FileStorageService $fileStorageService, ?GoogleSheetsSyncService $sheetsSyncService = null)
     {
         $this->reportRepo = $reportRepo;
         $this->fileStorageService = $fileStorageService;
@@ -57,7 +57,6 @@ class WorkReportService
 
         // Files arrive as staged temp paths from preview()
         $stagedPaths = $_SESSION['staged_files'] ?? [];
-        error_log("[SAVE] staged=" . count($stagedPaths) . " session_keys=" . implode(',', array_keys($_SESSION)));
 
         if (!empty($stagedPaths)) {
             $this->fileStorageService->storeStagedFiles($stagedPaths, $reportId, $userId);
@@ -74,7 +73,6 @@ class WorkReportService
 
         // Sync to Google Sheets (non-blocking — MariaDB is primary)
         if ($this->sheetsSyncService !== null) {
-            error_log("[SHEETS] Attempting sync: report_id={$reportId}");
             $this->sheetsSyncService->syncReport($report, $userId);
         }
 

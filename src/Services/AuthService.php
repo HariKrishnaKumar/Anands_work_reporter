@@ -38,9 +38,4 @@ class AuthService
         // Get the first user for dev login
         return $this->userRepo->getFirstUser();
     }
-
-    public function getDevUser(): ?array
-    {
-        return $this->userRepo->getFirstUser();
-    }
 }

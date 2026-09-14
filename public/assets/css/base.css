@@ -91,7 +91,11 @@ table {
   scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
-/* --- App Container --- */
+/* ============================================
+   APP LAYOUT — Mobile (default) + Tablet/Desktop (sidebar)
+   ============================================ */
+
+/* Mobile: single column */
 .app-container {
   max-width: var(--container-max);
   margin: 0 auto;
@@ -99,6 +103,18 @@ table {
   min-height: 100dvh;
   position: relative;
   background-color: var(--bg-primary);
+}
+
+/* Sidebar — hidden on mobile by default */
+.sidebar {
+  display: none;
+}
+
+.main-area {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* --- Page Content Area --- */

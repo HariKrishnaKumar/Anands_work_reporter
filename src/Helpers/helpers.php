@@ -76,13 +76,6 @@ function currentUser(): ?array
     return $_SESSION['user'] ?? null;
 }
 
-function requireAuth(): void
-{
-    if (!isLoggedIn()) {
-        redirect('login');
-    }
-}
-
 // --- Output helpers ---
 
 function e(mixed $value): string

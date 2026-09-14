@@ -88,6 +88,10 @@
   --container-max-desktop: 1000px;
   --container-max-large: 1100px;
 
+  /* Sidebar Layout */
+  --sidebar-width-tablet: 220px;
+  --sidebar-width-desktop: 250px;
+
   /* Transitions — Apple spring-like feel */
   --ease-clay: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -102,6 +106,7 @@
   --z-base: 0;
   --z-header: 100;
   --z-nav: 200;
+  --z-sidebar: 150;
   --z-modal: 1000;
   --z-toast: 1100;
 

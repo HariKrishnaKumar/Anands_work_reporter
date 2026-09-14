@@ -130,7 +130,7 @@
 }
 
 /* ============================================
-   BOTTOM NAVIGATION — Apple Tab Bar
+   BOTTOM NAVIGATION â€” Apple Tab Bar
    ============================================ */
 
 .bottom-nav {
@@ -188,7 +188,7 @@
   height: 22px;
 }
 
-/* + Button — navigation item, not always primary */
+/* + Button â€” navigation item, not always primary */
 .nav-item-add {
   display: flex;
   flex-direction: column;
@@ -352,7 +352,7 @@
 }
 
 /* ============================================
-   REPORT CARD — Apple List Item
+   REPORT CARD â€” Apple List Item
    ============================================ */
 
 .report-list {
@@ -456,7 +456,7 @@
 }
 
 /* ============================================
-   UPLOAD AREA — Apple Drop Zone
+   UPLOAD AREA â€” Apple Drop Zone
    ============================================ */
 
 .upload-area {
@@ -601,7 +601,7 @@
 }
 
 /* ============================================
-   CONFIRMATION MODAL — Apple Alert
+   CONFIRMATION MODAL â€” Apple Alert
    ============================================ */
 
 .modal-overlay {
@@ -817,7 +817,7 @@
 }
 
 /* ============================================
-   LOGIN SCREEN — Apple Style
+   LOGIN SCREEN â€” Apple Style
    ============================================ */
 
 .login-screen {
@@ -1016,4 +1016,22 @@
 
 .char-counter {
   font-variant-numeric: tabular-nums;
+}
+
+
+/* ============================================
+   SIDEBAR — Tablet & Desktop Navigation
+   ============================================ */
+
+.sidebar {
+  display: none;
+}
+
+/* ============================================
+   SIDEBAR — Tablet & Desktop Navigation
+   ============================================ */
+
+/* Hidden by default (mobile) */
+.sidebar {
+  display: none;
 }

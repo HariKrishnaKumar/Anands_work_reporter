@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Config\Database;
-use App\Interfaces\UserRepositoryInterface;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository
 {
     private \PDO $db;
 
@@ -27,14 +26,6 @@ class UserRepository implements UserRepositoryInterface
     {
         $stmt = $this->db->prepare('SELECT * FROM users WHERE email = ?');
         $stmt->execute([$email]);
-        $result = $stmt->fetch();
-        return $result ?: null;
-    }
-
-    public function findByUsername(string $username): ?array
-    {
-        $stmt = $this->db->prepare('SELECT * FROM users WHERE username = ?');
-        $stmt->execute([$username]);
         $result = $stmt->fetch();
         return $result ?: null;
     }

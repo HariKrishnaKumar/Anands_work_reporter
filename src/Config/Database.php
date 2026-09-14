@@ -36,9 +36,4 @@ class Database
 
         return self::$instance;
     }
-
-    public static function isDevEnvironment(): bool
-    {
-        return ($_ENV['APP_ENV'] ?? 'production') === 'development';
-    }
 }

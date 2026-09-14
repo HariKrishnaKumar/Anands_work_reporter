@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Config\GoogleSheets;
-use App\Interfaces\GoogleSheetsRepositoryInterface;
 use Google\Client;
 use Google\Service\Sheets;
 use Google\Service\Sheets\ValueRange;
 
-class GoogleSheetsRepository implements GoogleSheetsRepositoryInterface
+class GoogleSheetsRepository
 {
     private ?Sheets $service = null;
 

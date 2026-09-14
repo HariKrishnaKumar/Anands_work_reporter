@@ -1,13 +1,14 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
+const { clickAddReport } = require('./helpers');
 
 test.describe('TEST 11 — User Authorization', () => {
   test('User A cannot see User B reports', async ({ page }) => {
     // Login as User A (Hari) and create a report
     await page.goto('dev-login');
     await page.waitForURL('**/home');
-    await page.click('.nav-item-add');
+    await clickAddReport(page);
     await page.waitForURL('**/report/add');
     await page.fill('#description', 'Hari report - authorization test for user isolation between different users.');
     await page.fill('#work_date', '2026-09-13');
@@ -54,7 +55,7 @@ test.describe('TEST 12 — File Authorization', () => {
     // Login as Hari and create a report with a file
     await page.goto('dev-login');
     await page.waitForURL('**/home');
-    await page.click('.nav-item-add');
+    await clickAddReport(page);
     await page.waitForURL('**/report/add');
     
     await page.fill('#description', 'Hari file test - testing file access authorization between users in the system.');

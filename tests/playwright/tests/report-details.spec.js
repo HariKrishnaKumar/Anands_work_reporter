@@ -1,5 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+const { clickAddReport } = require('./helpers');
 
 test.describe('TEST 9-10 — Updated Home and Read-only Details', () => {
   test('saved report appears on home and details are read-only', async ({ page }) => {
@@ -8,7 +9,7 @@ test.describe('TEST 9-10 — Updated Home and Read-only Details', () => {
     await page.waitForURL('**/home');
     
     // Add a report
-    await page.click('.nav-item-add');
+    await clickAddReport(page);
     await page.waitForURL('**/report/add');
     
     const desc = 'Write comprehensive test suite for the daily work report application using Playwright.';

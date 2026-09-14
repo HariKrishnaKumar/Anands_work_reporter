@@ -1,5 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+const { clickAddReport } = require('./helpers');
 
 test.describe('TEST 3 — Add Work Report', () => {
   test('add report form has all required fields and no extras', async ({ page }) => {
@@ -7,8 +8,8 @@ test.describe('TEST 3 — Add Work Report', () => {
     await page.goto('dev-login');
     await page.waitForURL('**/home');
     
-    // Click + button
-    await page.click('.nav-item-add');
+    // Click + button (mobile) or sidebar link (tablet+)
+    await clickAddReport(page);
     await page.waitForURL('**/report/add');
     
     // Title

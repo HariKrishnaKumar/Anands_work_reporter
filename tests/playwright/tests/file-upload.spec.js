@@ -2,13 +2,14 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
+const { clickAddReport } = require('./helpers');
 
 test.describe('TEST 5 — File Upload Validation', () => {
   test('valid files upload and remove works', async ({ page }) => {
     // Login
     await page.goto('dev-login');
     await page.waitForURL('**/home');
-    await page.click('.nav-item-add');
+    await clickAddReport(page);
     await page.waitForURL('**/report/add');
     
     await page.fill('#description', 'Testing file upload validation for various file types and sizes.');
@@ -47,7 +48,7 @@ test.describe('TEST 5 — File Upload Validation', () => {
   test('file input accepts correct types', async ({ page }) => {
     await page.goto('dev-login');
     await page.waitForURL('**/home');
-    await page.click('.nav-item-add');
+    await clickAddReport(page);
     await page.waitForURL('**/report/add');
     
     const accept = await page.locator('#fileInput').getAttribute('accept');

@@ -5,16 +5,23 @@
 (function() {
   'use strict';
 
-  // --- Theme Toggle ---
-  const themeToggle = document.getElementById('themeToggle');
+  // --- Theme Toggle (mobile header + sidebar) ---
+  function toggleTheme() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+
+  var themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const html = document.documentElement;
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    });
+    themeToggle.addEventListener('click', toggleTheme);
+  }
+
+  var sidebarThemeToggle = document.getElementById('sidebarThemeToggle');
+  if (sidebarThemeToggle) {
+    sidebarThemeToggle.addEventListener('click', toggleTheme);
   }
 
   // --- System theme listener ---

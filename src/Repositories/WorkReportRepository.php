@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Config\Database;
-use App\Interfaces\WorkReportRepositoryInterface;
 
-class WorkReportRepository implements WorkReportRepositoryInterface
+class WorkReportRepository
 {
     private \PDO $db;
 
@@ -82,14 +81,5 @@ class WorkReportRepository implements WorkReportRepositoryInterface
         $stmt->execute([$fileId, $userId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ?: null;
-    }
-
-    /**
-     * Backward compat — delegates to addFileWithData
-     */
-    public function addFile(int $reportId, string $originalFilename, string $storedFilename, string $mimeType, int $fileSize, string $storagePath): array
-    {
-        // This method is kept for interface compatibility but unused in BLOB mode
-        throw new \RuntimeException('Use addFileWithData() for BLOB storage');
     }
 }
