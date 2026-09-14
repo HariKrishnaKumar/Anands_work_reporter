@@ -1,0 +1,401 @@
+/* ============================================
+   RESPONSIVE STYLES — Mobile First
+   Apple Design Language (Human Interface)
+   ============================================ */
+
+/* ============================================
+   CONTAINER SIZES
+   ============================================ */
+
+@media (min-width: 768px) {
+  .app-container {
+    max-width: var(--container-max-tablet);
+  }
+
+  .bottom-nav {
+    max-width: var(--container-max-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-container {
+    max-width: var(--container-max-desktop);
+  }
+
+  .bottom-nav {
+    max-width: var(--container-max-desktop);
+  }
+}
+
+@media (min-width: 1366px) {
+  .app-container {
+    max-width: var(--container-max-large);
+  }
+
+  .bottom-nav {
+    max-width: var(--container-max-large);
+  }
+}
+
+/* ============================================
+   SMALL PHONES (max 374px)
+   ============================================ */
+
+@media (max-width: 374px) {
+  .page-content {
+    padding: var(--space-lg) var(--space-md);
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .heading-display {
+    font-size: 1.5rem;
+  }
+
+  .heading-lg {
+    font-size: 1.25rem;
+  }
+
+  .greeting-text {
+    font-size: 1.125rem;
+  }
+
+  .greeting-name {
+    font-size: 1.5rem;
+  }
+
+  .report-card {
+    padding: var(--space-md);
+  }
+
+  .report-card-desc {
+    font-size: 0.875rem;
+  }
+
+  .login-card {
+    padding: var(--space-xl);
+  }
+
+  .login-title {
+    font-size: 1.25rem;
+  }
+
+  .modal {
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+  }
+
+  .success-actions {
+    max-width: 260px;
+  }
+
+  .upload-area {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .btn-lg {
+    padding: 12px 20px;
+    font-size: 0.9375rem;
+  }
+
+  .action-card {
+    padding: var(--space-md) var(--space-lg);
+    font-size: 0.875rem;
+  }
+}
+
+/* ============================================
+   SMALL PHONES (375px - 389px)
+   ============================================ */
+
+@media (min-width: 375px) and (max-width: 389px) {
+  .report-card-desc {
+    font-size: 0.875rem;
+  }
+
+  .greeting-text {
+    font-size: 1.125rem;
+  }
+
+  .greeting-name {
+    font-size: 1.625rem;
+  }
+}
+
+/* ============================================
+   PHONES (390px - 414px)
+   ============================================ */
+
+@media (min-width: 390px) and (max-width: 414px) {
+  /* Default sizing works well here */
+}
+
+/* ============================================
+   TABLETS (768px+)
+   ============================================ */
+
+@media (min-width: 768px) {
+  .page-content {
+    padding: var(--space-3xl) var(--space-2xl);
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .heading-display {
+    font-size: 2rem;
+  }
+
+  .heading-lg {
+    font-size: 1.5rem;
+  }
+
+  .greeting-text {
+    font-size: 1.375rem;
+  }
+
+  .greeting-name {
+    font-size: 2.25rem;
+  }
+
+  .report-card {
+    padding: var(--space-lg) var(--space-xl);
+  }
+
+  .login-screen {
+    padding: var(--space-3xl);
+  }
+
+  .login-card {
+    padding: var(--space-4xl);
+  }
+
+  .bottom-nav {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: var(--space-sm) var(--space-3xl);
+  }
+
+  .modal {
+    max-width: 380px;
+  }
+
+  .success-title {
+    font-size: 1.5rem;
+  }
+
+  .upload-area {
+    padding: var(--space-4xl) var(--space-2xl);
+  }
+
+  .empty-state {
+    padding: var(--space-6xl) var(--space-2xl);
+  }
+
+  .action-card {
+    max-width: 320px;
+  }
+}
+
+/* ============================================
+   DESKTOP (1024px+)
+   ============================================ */
+
+@media (min-width: 1024px) {
+  .app-header {
+    padding: var(--space-md) var(--space-3xl);
+  }
+
+  .page-content {
+    padding: var(--space-3xl) var(--space-4xl);
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .report-card:hover {
+    background: var(--surface-elevated);
+  }
+
+  .login-screen {
+    padding: var(--space-4xl);
+  }
+
+  .login-card {
+    padding: var(--space-5xl);
+  }
+
+  .success-screen {
+    min-height: 70vh;
+  }
+}
+
+/* ============================================
+   LARGE DESKTOP (1366px+)
+   ============================================ */
+
+@media (min-width: 1366px) {
+  .page-content {
+    padding: var(--space-4xl) var(--space-5xl);
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ============================================
+   FULL HD (1920px+)
+   ============================================ */
+
+@media (min-width: 1920px) {
+  .page-content {
+    padding: var(--space-5xl) var(--space-6xl);
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ============================================
+   TOUCH-FRIENDLY SIZING
+   ============================================ */
+
+@media (hover: none) and (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+  }
+
+  .form-input {
+    min-height: 48px;
+  }
+
+  .report-card {
+    min-height: 68px;
+    padding: var(--space-lg);
+  }
+
+  .nav-item {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 8px 16px;
+  }
+
+  .nav-item-add {
+    width: 56px;
+    height: 56px;
+  }
+
+  .file-item-remove {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .logout-link {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* ============================================
+   OVERFLOW PREVENTION
+   ============================================ */
+
+.report-card,
+.file-item,
+.review-section,
+.detail-section,
+.modal,
+.login-card,
+.success-screen {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  .bottom-nav,
+  .app-header,
+  .btn,
+  .theme-toggle,
+  .logout-link,
+  .back-link,
+  .upload-area,
+  .file-item-remove {
+    display: none !important;
+  }
+
+  .app-container {
+    max-width: 100%;
+  }
+
+  .page-content {
+    padding: 0;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .report-card {
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+
+  .review-section {
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY: REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .report-card:hover,
+  .btn-primary:hover,
+  .btn-danger:hover,
+  .nav-item-add:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY: FOCUS VISIBLE
+   ============================================ */
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   ACCESSIBILITY: HIGH CONTRAST
+   ============================================ */
+
+@media (forced-colors: active) {
+  .btn-primary {
+    border: 2px solid ButtonText;
+  }
+
+  .report-card {
+    border: 2px solid LinkText;
+  }
+
+  .form-input {
+    border: 2px solid ButtonText;
+  }
+}

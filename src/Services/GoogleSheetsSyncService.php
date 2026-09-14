@@ -1,0 +1,140 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Services;
+
+use App\Config\GoogleSheets;
+use App\Interfaces\GoogleSheetsRepositoryInterface;
+use App\Repositories\UserRepository;
+
+class GoogleSheetsSyncService
+{
+    private GoogleSheetsRepositoryInterface $sheetsRepo;
+    private UserRepository $userRepo;
+
+    public function __construct(GoogleSheetsRepositoryInterface $sheetsRepo, UserRepository $userRepo)
+    {
+        $this->sheetsRepo = $sheetsRepo;
+        $this->userRepo = $userRepo;
+    }
+
+    /**
+     * Sync a single report to Google Sheets.
+     * Uses Report ID as unique key — updates existing row or appends new.
+     * Never throws on failure — logs and returns false.
+     */
+    public function syncReport(array $report, int $userId): bool
+    {
+        if (!GoogleSheets::isEnabled()) {
+            return false;
+        }
+
+        try {
+            $user = $this->userRepo->findById($userId);
+            $userName = $user['display_name'] ?? 'Unknown';
+            $userEmail = $user['email'] ?? '';
+
+            $attachmentCount = count($report['files'] ?? []);
+            $attachmentNames = '';
+            if ($attachmentCount > 0) {
+                $names = array_column($report['files'], 'original_filename');
+                $attachmentNames = implode(', ', $names);
+            }
+
+            $row = [
+                (int)$report['id'],
+                $userId,
+                $userName,
+                $userEmail,
+                $report['work_date'] ?? '',
+                $report['description'] ?? '',
+                $attachmentCount,
+                $attachmentNames,
+                $report['created_at'] ?? date('Y-m-d H:i:s'),
+            ];
+
+            $existingRow = $this->sheetsRepo->findRowByReportId((int)$report['id']);
+
+            if ($existingRow > 0) {
+                $this->sheetsRepo->updateRow($existingRow, $row);
+                error_log("[SHEETS] Updated row {$existingRow}: report_id=" . $report['id']);
+            } else {
+                $this->sheetsRepo->appendRow($row);
+                error_log("[SHEETS] Appended new row: report_id=" . $report['id']);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            error_log("[SHEETS] Sync failed: report_id=" . ($report['id'] ?? '?') . " error=" . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Sync all reports from MariaDB to Google Sheets (backfill).
+     * Idempotent — will not create duplicates.
+     *
+     * @return array{synced: int, failed: int, skipped: int}
+     */
+    public function syncAll(): array
+    {
+        $result = ['synced' => 0, 'failed' => 0, 'skipped' => 0];
+
+        if (!GoogleSheets::isEnabled()) {
+            $result['error'] = 'Google Sheets integration is disabled';
+            return $result;
+        }
+
+        try {
+            $existingIds = $this->sheetsRepo->getAllReportIds();
+            $existingIdValues = array_values($existingIds);
+        } catch (\Exception $e) {
+            error_log("[SHEETS] Backfill failed to read existing IDs: " . $e->getMessage());
+            $result['error'] = 'Failed to read spreadsheet: ' . $e->getMessage();
+            return $result;
+        }
+
+        $db = \App\Config\Database::getConnection();
+        $stmt = $db->query('SELECT r.*, u.display_name, u.email FROM work_reports r JOIN users u ON r.user_id = u.id ORDER BY r.id ASC');
+        $reports = $stmt->fetchAll();
+
+        foreach ($reports as $report) {
+            $reportId = (int)$report['id'];
+
+            // Get files for this report
+            $fileStmt = $db->prepare('SELECT original_filename FROM work_report_files WHERE work_report_id = ?');
+            $fileStmt->execute([$reportId]);
+            $report['files'] = $fileStmt->fetchAll();
+
+            $row = [
+                $reportId,
+                (int)$report['user_id'],
+                $report['display_name'] ?? 'Unknown',
+                $report['email'] ?? '',
+                $report['work_date'] ?? '',
+                $report['description'] ?? '',
+                count($report['files']),
+                implode(', ', array_column($report['files'], 'original_filename')),
+                $report['created_at'] ?? '',
+            ];
+
+            try {
+                if (in_array($reportId, $existingIdValues)) {
+                    $rowNum = array_search($reportId, $existingIdValues);
+                    if ($rowNum !== false) {
+                        $this->sheetsRepo->updateRow((int)array_keys($existingIds)[array_search($reportId, $existingIdValues)] ?? $rowNum, $row);
+                    }
+                } else {
+                    $this->sheetsRepo->appendRow($row);
+                    $existingIdValues[] = $reportId;
+                }
+                $result['synced']++;
+            } catch (\Exception $e) {
+                error_log("[SHEETS] Backfill failed: report_id={$reportId} error=" . $e->getMessage());
+                $result['failed']++;
+            }
+        }
+
+        return $result;
+    }
+}
