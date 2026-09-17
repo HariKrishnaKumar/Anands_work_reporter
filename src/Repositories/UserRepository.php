@@ -29,15 +29,6 @@ class UserRepository
         $result = $stmt->fetch();
         return $result ?: null;
     }
-
-    public function create(string $username, string $email, string $displayName, string $passwordHash): array
-    {
-        $stmt = $this->db->prepare('INSERT INTO users (username, email, display_name, password_hash) VALUES (?, ?, ?, ?)');
-        $stmt->execute([$username, $email, $displayName, $passwordHash]);
-        $id = (int)$this->db->lastInsertId();
-        return $this->findById($id);
-    }
-
     public function getFirstUser(): ?array
     {
         $stmt = $this->db->query('SELECT id, username, email, display_name FROM users ORDER BY id ASC LIMIT 1');

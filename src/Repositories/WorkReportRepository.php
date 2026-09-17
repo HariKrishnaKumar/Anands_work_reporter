@@ -29,6 +29,28 @@ class WorkReportRepository
         return $stmt->fetchAll();
     }
 
+    public function searchByUser(int $userId, string $query = '', string $date = ''): array
+    {
+        $sql = 'SELECT * FROM work_reports WHERE user_id = ?';
+        $params = [$userId];
+
+        if (!empty($query)) {
+            $sql .= ' AND description LIKE ?';
+            $params[] = '%' . $query . '%';
+        }
+
+        if (!empty($date)) {
+            $sql .= ' AND work_date = ?';
+            $params[] = $date;
+        }
+
+        $sql .= ' ORDER BY work_date DESC, created_at DESC';
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
     public function create(int $userId, string $workDate, string $description): array
     {
         $stmt = $this->db->prepare('INSERT INTO work_reports (user_id, work_date, description) VALUES (?, ?, ?)');
@@ -68,7 +90,7 @@ class WorkReportRepository
     }
 
     /**
-     * Get file with BLOB data for download/preview â€” verifies ownership
+     * Get file with BLOB data for download/preview — verifies ownership
      */
     public function getFileById(int $fileId, int $userId): ?array
     {
@@ -81,5 +103,24 @@ class WorkReportRepository
         $stmt->execute([$fileId, $userId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ?: null;
+    }
+
+    /**
+     * Get all reports across all users (for sync/backfill operations)
+     */
+    public function findAll(): array
+    {
+        $stmt = $this->db->query('SELECT r.*, u.display_name, u.email FROM work_reports r JOIN users u ON r.user_id = u.id ORDER BY r.id ASC');
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Get file metadata for a report without user ownership check (for sync/backfill)
+     */
+    public function getFilesByReportId(int $reportId): array
+    {
+        $stmt = $this->db->prepare('SELECT original_filename FROM work_report_files WHERE work_report_id = ?');
+        $stmt->execute([$reportId]);
+        return $stmt->fetchAll();
     }
 }

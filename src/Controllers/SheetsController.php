@@ -8,6 +8,7 @@ use App\Config\GoogleSheets;
 use App\Services\GoogleSheetsSyncService;
 use App\Repositories\GoogleSheetsRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\WorkReportRepository;
 
 class SheetsController
 {
@@ -37,7 +38,8 @@ class SheetsController
 
         $sheetsRepo = new GoogleSheetsRepository();
         $userRepo = new UserRepository();
-        $syncService = new GoogleSheetsSyncService($sheetsRepo, $userRepo);
+        $reportRepo = new WorkReportRepository();
+        $syncService = new GoogleSheetsSyncService($sheetsRepo, $userRepo, $reportRepo);
 
         $result = $syncService->syncAll();
 

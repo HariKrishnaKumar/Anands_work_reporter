@@ -2,7 +2,10 @@ vendor/
 .env
 storage/uploads/*
 !storage/uploads/.gitkeep
+storage/temp/*
+!storage/temp/.gitkeep
 storage/google-credentials.json
+deployment-secrets.txt
 tests/playwright/node_modules/
 tests/playwright/test-results/
 tests/playwright/playwright-report/

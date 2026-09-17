@@ -24,10 +24,7 @@ class ReportController
 
         $sheetsSyncService = null;
         if (GoogleSheets::isEnabled()) {
-            $sheetsSyncService = new GoogleSheetsSyncService(
-                new GoogleSheetsRepository(),
-                new UserRepository()
-            );
+            $sheetsSyncService = new GoogleSheetsSyncService(new GoogleSheetsRepository(), new UserRepository(), $repo);
         }
 
         $this->reportService = new WorkReportService($repo, $this->fileService, $sheetsSyncService);
@@ -120,12 +117,13 @@ class ReportController
 
         $userId = currentUserId();
 
-        // saveReport reads staged files from $_SESSION['staged_files'] and stores as BLOB
+        // Pass staged files from session explicitly
+        $stagedPaths = $_SESSION['staged_files'] ?? [];
         $report = $this->reportService->saveReport(
             $userId,
             $draft['work_date'],
             $draft['description'],
-            []
+            $stagedPaths
         );
 
         // Clear draft and staged data

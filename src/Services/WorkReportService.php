@@ -48,30 +48,21 @@ class WorkReportService
 
     /**
      * Save a work report with optional files (BLOB storage).
-     * $files is the reconstructed $_FILES-shaped array from session.
+     *
+     * @param array $stagedPaths Array of staged temp file paths from preview step
      */
-    public function saveReport(int $userId, string $workDate, string $description, array $files = []): array
+    public function saveReport(int $userId, string $workDate, string $description, array $stagedPaths = []): array
     {
         $report = $this->reportRepo->create($userId, $workDate, $description);
         $reportId = (int)$report['id'];
 
-        // Files arrive as staged temp paths from preview()
-        $stagedPaths = $_SESSION['staged_files'] ?? [];
-
         if (!empty($stagedPaths)) {
             $this->fileStorageService->storeStagedFiles($stagedPaths, $reportId, $userId);
-            unset($_SESSION['staged_files']);
-        } elseif (!empty($files) && !empty($files['name'][0]) && $files['name'][0] !== '') {
-            // Fallback: direct same-request upload (legacy path)
-            $validation = $this->fileStorageService->validateFiles($files);
-            if (!empty($validation['valid'])) {
-                $this->fileStorageService->storeFiles($validation['valid'], $reportId, $userId);
-            }
         }
 
         $report['files'] = $this->reportRepo->getFilesByReport($reportId, $userId);
 
-        // Sync to Google Sheets (non-blocking â€” MariaDB is primary)
+        // Sync to Google Sheets (non-blocking — MariaDB is primary)
         if ($this->sheetsSyncService !== null) {
             $this->sheetsSyncService->syncReport($report, $userId);
         }
@@ -91,6 +82,15 @@ class WorkReportService
     public function getUserReports(int $userId): array
     {
         $reports = $this->reportRepo->findAllByUser($userId);
+        foreach ($reports as &$report) {
+            $report['files'] = $this->reportRepo->getFilesByReport((int)$report['id'], $userId);
+        }
+        return $reports;
+    }
+
+    public function searchUserReports(int $userId, string $query = '', string $date = ''): array
+    {
+        $reports = $this->reportRepo->searchByUser($userId, $query, $date);
         foreach ($reports as &$report) {
             $report['files'] = $this->reportRepo->getFilesByReport((int)$report['id'], $userId);
         }

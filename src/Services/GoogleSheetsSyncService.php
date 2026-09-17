@@ -6,22 +6,25 @@ namespace App\Services;
 use App\Config\GoogleSheets;
 use App\Repositories\GoogleSheetsRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\WorkReportRepository;
 
 class GoogleSheetsSyncService
 {
     private GoogleSheetsRepository $sheetsRepo;
     private UserRepository $userRepo;
+    private WorkReportRepository $reportRepo;
 
-    public function __construct(GoogleSheetsRepository $sheetsRepo, UserRepository $userRepo)
+    public function __construct(GoogleSheetsRepository $sheetsRepo, UserRepository $userRepo, WorkReportRepository $reportRepo)
     {
         $this->sheetsRepo = $sheetsRepo;
         $this->userRepo = $userRepo;
+        $this->reportRepo = $reportRepo;
     }
 
     /**
      * Sync a single report to Google Sheets.
-     * Uses Report ID as unique key â€” updates existing row or appends new.
-     * Never throws on failure â€” logs and returns false.
+     * Uses Report ID as unique key — updates existing row or appends new.
+     * Never throws on failure — logs and returns false.
      */
     public function syncReport(array $report, int $userId): bool
     {
@@ -70,7 +73,7 @@ class GoogleSheetsSyncService
 
     /**
      * Sync all reports from MariaDB to Google Sheets (backfill).
-     * Idempotent â€” will not create duplicates.
+     * Idempotent — will not create duplicates.
      *
      * @return array{synced: int, failed: int, skipped: int}
      */
@@ -91,17 +94,11 @@ class GoogleSheetsSyncService
             return $result;
         }
 
-        $db = \App\Config\Database::getConnection();
-        $stmt = $db->query('SELECT r.*, u.display_name, u.email FROM work_reports r JOIN users u ON r.user_id = u.id ORDER BY r.id ASC');
-        $reports = $stmt->fetchAll();
+        $reports = $this->reportRepo->findAll();
 
         foreach ($reports as $report) {
             $reportId = (int)$report['id'];
-
-            // Get files for this report
-            $fileStmt = $db->prepare('SELECT original_filename FROM work_report_files WHERE work_report_id = ?');
-            $fileStmt->execute([$reportId]);
-            $report['files'] = $fileStmt->fetchAll();
+            $report['files'] = $this->reportRepo->getFilesByReportId($reportId);
 
             $row = [
                 $reportId,

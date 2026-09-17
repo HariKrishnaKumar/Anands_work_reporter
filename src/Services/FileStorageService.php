@@ -155,39 +155,4 @@ class FileStorageService
             unlink($path);
         }
     }
-
-    /**
-     * Legacy method — stores files directly. Used when files arrive fresh (same request).
-     */
-    public function storeFiles(array $validatedFiles, int $reportId, int $userId): array
-    {
-        foreach ($validatedFiles as $file) {
-            $fileData = file_get_contents($file['tmp_name']);
-            $fileSize = strlen($fileData);
-
-            $this->reportRepo->addFileWithData(
-                $reportId,
-                $file['name'],
-                $file['mime_type'],
-                $fileSize,
-                $fileData
-            );
-        }
-        return [];
-    }
-
-    /**
-     * Clean up stale temp files (older than 1 hour)
-     */
-    public function cleanupTemp(): void
-    {
-        $files = glob($this->tempDir . '/*');
-        if (!$files) return;
-        $cutoff = time() - 3600;
-        foreach ($files as $f) {
-            if (is_file($f) && filemtime($f) < $cutoff) {
-                unlink($f);
-            }
-        }
-    }
 }

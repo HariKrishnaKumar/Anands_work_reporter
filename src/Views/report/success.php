@@ -1,6 +1,18 @@
 <?php
 $pageTitle = 'Report Saved - Daily Work Report';
 $activeNav = '';
+
+// Load the saved report from session if available
+$report = null;
+$lastReportId = $_SESSION['last_report_id'] ?? null;
+if ($lastReportId) {
+    $reportRepo = new \App\Repositories\WorkReportRepository();
+    $report = $reportRepo->findByIdAndUser((int)$lastReportId, currentUserId());
+    if ($report) {
+        $report['files'] = $reportRepo->getFilesByReport((int)$lastReportId, currentUserId());
+    }
+}
+
 require __DIR__ . '/../layouts/main.php';
 ?>
 
@@ -9,7 +21,7 @@ require __DIR__ . '/../layouts/main.php';
         <div class="success-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h1 class="success-title">Work Report Saved!</h1>
+        <h1 class="success-title">Work Report Saved</h1>
         <p class="success-text">Your work has been recorded successfully.</p>
 
         <?php if (!empty($report)): ?>
