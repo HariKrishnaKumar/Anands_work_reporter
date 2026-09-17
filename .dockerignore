@@ -1,0 +1,61 @@
+# Version control
+.git
+.gitignore
+
+# Environment files (secrets)
+.env
+.env.*
+!.env.example
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Development dependencies
+vendor/
+node_modules/
+tests/
+playwright-report/
+test-results/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+!README.md
+docs/
+SRS.md
+SECURITY-AUDIT-REPORT.md
+
+# Build artifacts
+composer.lock
+graphify-out/
+.gstack/
+.opencode/
+
+# Storage (will be mounted as volume)
+storage/uploads/*
+storage/temp/*
+storage/google-credentials.json
+
+# Sample files
+sample/
+
+# PowerShell scripts
+*.ps1
+
+# Prompt files
+prompt.txt
+deployment-prompt.txt
+deployment-secrets.txt
+google.md

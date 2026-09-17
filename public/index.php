@@ -17,8 +17,9 @@ if (empty($_SESSION['csrf_token'])) {
 
 $router = new \AltoRouter();
 
-// Set base path
-$router->setBasePath('/daily-work-report/public');
+// Set base path — configurable for Docker (empty) vs local XAMPP (/daily-work-report/public)
+$basePath = $_ENV['APP_BASE_PATH'] ?? '/daily-work-report/public';
+$router->setBasePath($basePath);
 
 // --- Auth Routes ---
 $router->map('GET', '/login', [\App\Controllers\AuthController::class, 'loginForm'], 'login');
@@ -48,6 +49,25 @@ $router->map('GET', '/files/[i:id]', [\App\Controllers\FileController::class, 's
 // --- Google Sheets Backfill (dev only) ---
 if (isDevEnvironment()) {
     $router->map('GET', '/sheets/sync-all', [\App\Controllers\SheetsController::class, 'syncAll'], 'sheets.sync-all');
+}
+
+// --- Health check endpoint ---
+if ($_SERVER['REQUEST_URI'] === '/health' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    header('Content-Type: application/json');
+    $health = ['status' => 'ok', 'timestamp' => date('c')];
+
+    // Optional: check database connectivity
+    try {
+        \App\Config\Database::getConnection();
+        $health['database'] = 'connected';
+    } catch (\Throwable $e) {
+        http_response_code(503);
+        $health['database'] = 'disconnected';
+        $health['status'] = 'degraded';
+    }
+
+    echo json_encode($health);
+    exit;
 }
 
 // --- Match current request ---

@@ -1,0 +1,32 @@
+# Docker .htaccess — served from /var/www/html/public (DocumentRoot)
+# RewriteBase is / because Apache already points to the public/ dir
+RewriteEngine On
+RewriteBase /
+
+# Block sensitive files from web access
+RewriteRule ^\.env$ - [F,L]
+RewriteRule ^\.git - [F,L]
+RewriteRule ^composer\.(json|lock)$ - [F,L]
+RewriteRule ^storage/google-credentials\.json$ - [F,L]
+RewriteRule ^deployment-secrets\.txt$ - [F,L]
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'"
+    Header unset X-Powered-By
+    Header always unset Server
+    ServerSignature Off
+</IfModule>
+
+# If the request is for an existing file or directory, serve it directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Otherwise rewrite to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
