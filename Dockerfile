@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libzip-dev \
     libicu-dev \
+    libonig-dev \
     libcurl4-openssl-dev \
     libssl-dev \
     openssl \
