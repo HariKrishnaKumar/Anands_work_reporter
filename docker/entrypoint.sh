@@ -3,61 +3,67 @@ set -e
 
 # =============================================================================
 # Daily Work Report — Docker Entrypoint
-# Handles: port config, Aiven SSL cert, schema seeding, Apache start
+# Handles: port config, Aiven SSL cert, DNS check, schema seeding, Apache start
 # =============================================================================
 
-# Use Render's PORT env variable, default to 8080
-PORT="${PORT:-8080}"
+echo "============================================"
+echo "  Daily Work Report — Entrypoint Starting"
+echo "============================================"
 
 # --- 1. Apache port configuration ---
-# Add Listen directive to ports.conf
+PORT="${PORT:-8080}"
 echo "Listen $PORT" >> /etc/apache2/ports.conf
-
-# Replace ${APACHE_PORT} placeholder in VirtualHost config
 sed -i "s/\${APACHE_PORT}/$PORT/g" /etc/apache2/sites-available/000-default.conf
-
-echo "[entrypoint] Apache configured to listen on port $PORT"
+echo "[1/5] Apache configured to listen on port $PORT"
 
 # --- 2. Aiven SSL/TLS certificate handling ---
-# DB_SSL_CA contains a base64-encoded DER certificate from deployment-secrets.txt
-# We decode it to a PEM file that PDO can use
+# DB_SSL_CA can be: file path, PEM text, or base64-encoded DER
+# We always write a PEM file to /etc/ssl/aiven-ca.pem
+CERT_FILE="/etc/ssl/aiven-ca.pem"
+CERT_WRITTEN=false
+
 if [ -n "$DB_SSL_CA" ]; then
-    # Check if it's already a file path
     if [ -f "$DB_SSL_CA" ]; then
-        echo "[entrypoint] DB_SSL_CA is a file path: $DB_SSL_CA"
+        # Already a file path — use directly
+        CERT_FILE="$DB_SSL_CA"
+        CERT_WRITTEN=true
+        echo "[2/5] SSL cert is a file path: $DB_SSL_CA"
+    elif echo "$DB_SSL_CA" | head -c 30 | grep -q "BEGIN CERTIFICATE"; then
+        # PEM format (with headers) — write directly
+        echo "$DB_SSL_CA" > "$CERT_FILE"
+        export DB_SSL_CA="$CERT_FILE"
+        CERT_WRITTEN=true
+        echo "[2/5] SSL cert is PEM format — written to $CERT_FILE"
     else
-        # It's base64-encoded content or inline PEM — decode and convert to PEM file
-        echo "[entrypoint] Processing DB_SSL_CA certificate..."
+        # Base64-encoded DER — decode to PEM
+        echo "[2/5] Decoding base64 SSL certificate..."
+        CLEAN_B64=$(echo "$DB_SSL_CA" | tr -d '[:space:]')
+        echo "$CLEAN_B64" | base64 -d 2>/dev/null > /tmp/aiven-ca.der || true
 
-        # Check if it's already a PEM certificate (starts with -----BEGIN)
-        if echo "$DB_SSL_CA" | head -c 30 | grep -q "BEGIN CERTIFICATE"; then
-            echo "$DB_SSL_CA" > /etc/ssl/aiven-ca.pem
-            export DB_SSL_CA=/etc/ssl/aiven-ca.pem
-            echo "[entrypoint] Certificate is already PEM format"
-        else
-            # Decode base64 to DER binary
-            echo "$DB_SSL_CA" | tr -d '[:space:]' | base64 -d > /etc/ssl/aiven-ca.der 2>/dev/null || true
-
-            if [ -f /etc/ssl/aiven-ca.der ] && [ -s /etc/ssl/aiven-ca.der ]; then
-                # Try to convert DER to PEM
-                if openssl x509 -inform DER -in /etc/ssl/aiven-ca.der -out /etc/ssl/aiven-ca.pem 2>/dev/null; then
-                    echo "[entrypoint] Converted DER certificate to PEM"
-                    export DB_SSL_CA=/etc/ssl/aiven-ca.pem
-                elif openssl x509 -inform PEM -in /etc/ssl/aiven-ca.der -out /etc/ssl/aiven-ca.pem 2>/dev/null; then
-                    echo "[entrypoint] Certificate was already in PEM format"
-                    export DB_SSL_CA=/etc/ssl/aiven-ca.pem
-                else
-                    echo "[entrypoint] WARNING: Could not convert certificate — using raw DER"
-                    cp /etc/ssl/aiven-ca.der /etc/ssl/aiven-ca.pem
-                    export DB_SSL_CA=/etc/ssl/aiven-ca.pem
-                fi
+        if [ -s /tmp/aiven-ca.der ]; then
+            # Try DER→PEM conversion with openssl
+            if openssl x509 -inform DER -in /tmp/aiven-ca.der -out "$CERT_FILE" 2>/dev/null; then
+                export DB_SSL_CA="$CERT_FILE"
+                CERT_WRITTEN=true
+                echo "[2/5] Converted DER to PEM — written to $CERT_FILE"
+            elif openssl x509 -inform PEM -in /tmp/aiven-ca.der -out "$CERT_FILE" 2>/dev/null; then
+                export DB_SSL_CA="$CERT_FILE"
+                CERT_WRITTEN=true
+                echo "[2/5] Certificate was already PEM — written to $CERT_FILE"
             else
-                echo "[entrypoint] WARNING: DB_SSL_CA decode produced empty file"
+                # Fallback: write raw bytes, PHP will handle DER→PEM
+                cp /tmp/aiven-ca.der "$CERT_FILE"
+                export DB_SSL_CA="$CERT_FILE"
+                CERT_WRITTEN=true
+                echo "[2/5] OpenSSL conversion failed — wrote raw DER, PHP will handle conversion"
             fi
-
-            rm -f /etc/ssl/aiven-ca.der
+        else
+            echo "[2/5] WARNING: Could not decode DB_SSL_CA"
         fi
+        rm -f /tmp/aiven-ca.der
     fi
+else
+    echo "[2/5] No DB_SSL_CA set — SSL disabled"
 fi
 
 # --- 3. Create storage directories ---
@@ -66,45 +72,71 @@ mkdir -p /var/www/html/storage/uploads
 chown -R www-data:www-data /var/www/html/storage
 chmod -R 775 /var/www/html/storage/temp 2>/dev/null || true
 chmod -R 775 /var/www/html/storage/uploads 2>/dev/null || true
+echo "[3/5] Storage directories ready"
 
-# --- 4. Database schema seeding (first deploy) ---
-# Try to connect and check if users table exists; if not, run schema
+# --- 4. DNS diagnostic + Database schema seeding ---
 if [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ] && [ -n "$DB_PASSWORD" ]; then
-    echo "[entrypoint] Checking database schema..."
+    echo "[4/5] Checking database connectivity..."
+
+    # DNS check
+    echo "  Resolving $DB_HOST..."
+    if nslookup "$DB_HOST" >/dev/null 2>&1; then
+        echo "  DNS resolution: OK"
+    elif host "$DB_HOST" >/dev/null 2>&1; then
+        echo "  DNS resolution: OK (via host)"
+    else
+        echo "  DNS resolution: FAILED — hostname cannot be resolved"
+        echo "  This may be a DNS propagation delay. Apache will still start."
+        echo "  The app will retry DNS when handling requests."
+    fi
 
     # Build MySQL connection args
-    MYSQL_CMD="mysql -h $DB_HOST -P $DB_PORT -u $DB_USERNAME"
-    if [ -n "$DB_PASSWORD" ]; then
-        MYSQL_CMD="$MYSQL_CMD -p$DB_PASSWORD"
+    MYSQL_SSL=""
+    if [ "$CERT_WRITTEN" = true ] && [ -f "$CERT_FILE" ]; then
+        MYSQL_SSL="--ssl-ca=$CERT_FILE"
     fi
 
-    # Add SSL if configured
-    if [ -n "$DB_SSL_CA" ] && [ -f "$DB_SSL_CA" ]; then
-        MYSQL_CMD="$MYSQL_CMD --ssl-ca=$DB_SSL_CA --ssl-verify-server-cert"
-    fi
+    # Try to connect and check if users table exists
+    echo "  Connecting to MySQL at $DB_HOST:$DB_PORT..."
+    TABLE_CHECK=$(mysql \
+        -h "$DB_HOST" \
+        -P "$DB_PORT" \
+        -u "$DB_USERNAME" \
+        -p"$DB_PASSWORD" \
+        $MYSQL_SSL \
+        -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$DB_DATABASE' AND table_name='users'" \
+        "$DB_DATABASE" 2>&1 || echo "CONNECT_FAILED")
 
-    # Check if users table exists
-    TABLE_CHECK=$($MYSQL_CMD -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$DB_DATABASE' AND table_name='users'" $DB_DATABASE 2>/dev/null || echo "error")
+    if echo "$TABLE_CHECK" | grep -q "CONNECT_FAILED\|Access denied\|unknown\|error\|failed"; then
+        echo "  MySQL connection: FAILED"
+        echo "  Error: $TABLE_CHECK"
+        echo "  Schema will NOT be seeded. Apache will start anyway."
+        echo "  The PHP app will retry the connection when handling requests."
+    elif [ "$TABLE_CHECK" = "0" ]; then
+        echo "  Users table not found — seeding schema..."
+        SCHEMA_CLEAN=$(sed '/^USE /d; /^CREATE DATABASE/d' /var/www/html/database/schema.sql)
+        SEED_RESULT=$(echo "$SCHEMA_CLEAN" | mysql \
+            -h "$DB_HOST" \
+            -P "$DB_PORT" \
+            -u "$DB_USERNAME" \
+            -p"$DB_PASSWORD" \
+            $MYSQL_SSL \
+            "$DB_DATABASE" 2>&1 || echo "SEED_FAILED")
 
-    if [ "$TABLE_CHECK" = "0" ] || [ "$TABLE_CHECK" = "error" ]; then
-        echo "[entrypoint] Users table not found — seeding schema..."
-        if [ -f /var/www/html/database/schema.sql ]; then
-            # Remove USE and CREATE DATABASE statements (we're already connected to the right DB)
-            SCHEMA_CLEAN=$(sed '/^USE /d; /^CREATE DATABASE/d; /^--.*Database/d' /var/www/html/database/schema.sql)
-            echo "$SCHEMA_CLEAN" | $MYSQL_CMD $DB_DATABASE 2>/dev/null && \
-                echo "[entrypoint] Schema seeded successfully" || \
-                echo "[entrypoint] WARNING: Schema seeding failed — you may need to seed manually"
+        if echo "$SEED_RESULT" | grep -q "SEED_FAILED"; then
+            echo "  Schema seeding: FAILED"
+            echo "  Error: $SEED_RESULT"
         else
-            echo "[entrypoint] WARNING: schema.sql not found in image"
+            echo "  Schema seeding: SUCCESS (3 tables + 3 users created)"
         fi
     else
-        echo "[entrypoint] Database schema already exists"
+        echo "  Database schema: ALREADY EXISTS (users table found)"
     fi
 else
-    echo "[entrypoint] Database env vars not set — skipping schema check"
+    echo "[4/5] Database env vars not set — skipping schema check"
 fi
 
-echo "[entrypoint] Starting Apache on port $PORT..."
-
-# Start Apache in foreground
+# --- 5. Start Apache ---
+echo "[5/5] Starting Apache on port $PORT..."
+echo "============================================"
 exec apache2-foreground

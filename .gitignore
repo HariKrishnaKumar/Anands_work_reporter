@@ -1,5 +1,6 @@
 vendor/
 .env
+.env_render
 storage/uploads/*
 !storage/uploads/.gitkeep
 storage/temp/*

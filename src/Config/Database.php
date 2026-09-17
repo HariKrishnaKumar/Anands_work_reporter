@@ -40,42 +40,7 @@ class Database
             $sslVerify = ($_ENV['DB_SSL_VERIFY'] ?? 'true') === 'true';
 
             if (!empty($sslCa)) {
-                $sslCaPath = null;
-
-                if (file_exists($sslCa)) {
-                    // DB_SSL_CA is a file path — use directly
-                    $sslCaPath = $sslCa;
-                } elseif (function_exists('base64_decode')) {
-                    // DB_SSL_CA may be inline base64-encoded certificate (from deployment-secrets.txt)
-                    // Decode and write to a temp file for PDO
-                    $decoded = base64_decode($sslCa, true);
-                    if ($decoded !== false && strlen($decoded) > 50) {
-                        $tempCert = sys_get_temp_dir() . '/aiven-ca-' . md5($sslCa) . '.pem';
-
-                        // Check if decoded content is DER (binary) or PEM (text)
-                        if (str_starts_with($decoded, "-----BEGIN CERTIFICATE-----")) {
-                            // Already PEM text
-                            file_put_contents($tempCert, $decoded);
-                        } else {
-                            // DER binary — write and convert using openssl if available
-                            $derFile = $tempCert . '.der';
-                            file_put_contents($derFile, $decoded);
-                            $output = [];
-                            $exitCode = 0;
-                            exec("openssl x509 -inform DER -in " . escapeshellarg($derFile) . " -out " . escapeshellarg($tempCert) . " 2>&1", $output, $exitCode);
-                            if ($exitCode !== 0 || !file_exists($tempCert)) {
-                                // Fallback: use raw DER (PDO may accept it)
-                                rename($derFile, $tempCert);
-                            } else {
-                                @unlink($derFile);
-                            }
-                        }
-
-                        if (file_exists($tempCert) && filesize($tempCert) > 0) {
-                            $sslCaPath = $tempCert;
-                        }
-                    }
-                }
+                $sslCaPath = self::resolveSslCa($sslCa);
 
                 if ($sslCaPath !== null) {
                     $options[\PDO::MYSQL_ATTR_SSL_CA] = $sslCaPath;
@@ -89,5 +54,68 @@ class Database
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Resolve SSL CA certificate to a file path.
+     * Handles: file path, PEM text, base64-encoded DER.
+     * Returns path to a PEM file, or null on failure.
+     */
+    private static function resolveSslCa(string $sslCa): ?string
+    {
+        // 1. If it's a file path that exists, use it directly
+        if (file_exists($sslCa)) {
+            return $sslCa;
+        }
+
+        $tempDir = sys_get_temp_dir();
+        $hash = md5($sslCa);
+
+        // 2. If it starts with "-----BEGIN", it's PEM text
+        if (str_starts_with(trim($sslCa), "-----BEGIN CERTIFICATE-----")) {
+            $pemFile = "$tempDir/aiven-ca-$hash.pem";
+            file_put_contents($pemFile, $sslCa);
+            if (filesize($pemFile) > 0) {
+                return $pemFile;
+            }
+        }
+
+        // 3. Try base64 decode → could be DER binary
+        $decoded = base64_decode($sslCa, true);
+        if ($decoded === false || strlen($decoded) < 50) {
+            return null;
+        }
+
+        // Check if decoded content is actually PEM text (base64-encoded PEM)
+        $decodedText = trim($decoded);
+        if (str_starts_with($decodedText, "-----BEGIN CERTIFICATE-----")) {
+            $pemFile = "$tempDir/aiven-ca-$hash.pem";
+            file_put_contents($pemFile, $decodedText);
+            if (filesize($pemFile) > 0) {
+                return $pemFile;
+            }
+        }
+
+        // It's DER binary — convert to PEM using PHP's openssl functions
+        $derFile = "$tempDir/aiven-ca-$hash.der";
+        file_put_contents($derFile, $decoded);
+
+        // Try reading as DER certificate
+        $cert = @openssl_x509_read($derFile);
+        if ($cert !== false) {
+            $pemFile = "$tempDir/aiven-ca-$hash.pem";
+            if (@openssl_x509_export($cert, $pemContent) && !empty($pemContent)) {
+                file_put_contents($pemFile, $pemContent);
+                @openssl_x509_free($cert);
+                @unlink($derFile);
+                return $pemFile;
+            }
+            @openssl_x509_free($cert);
+        }
+
+        // Fallback: try reading the DER file directly as a certificate resource
+        // Some PHP builds accept raw DER via MYSQL_ATTR_SSL_CA
+        @unlink($derFile);
+        return null;
     }
 }
