@@ -38,7 +38,6 @@ SRS.md
 SECURITY-AUDIT-REPORT.md
 
 # Build artifacts
-composer.lock
 graphify-out/
 .gstack/
 .opencode/

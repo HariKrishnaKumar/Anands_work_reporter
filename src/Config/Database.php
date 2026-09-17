@@ -39,10 +39,49 @@ class Database
             $sslCa = $_ENV['DB_SSL_CA'] ?? '';
             $sslVerify = ($_ENV['DB_SSL_VERIFY'] ?? 'true') === 'true';
 
-            if (!empty($sslCa) && file_exists($sslCa)) {
-                $options[\PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
-                if ($sslVerify) {
-                    $options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+            if (!empty($sslCa)) {
+                $sslCaPath = null;
+
+                if (file_exists($sslCa)) {
+                    // DB_SSL_CA is a file path — use directly
+                    $sslCaPath = $sslCa;
+                } elseif (function_exists('base64_decode')) {
+                    // DB_SSL_CA may be inline base64-encoded certificate (from deployment-secrets.txt)
+                    // Decode and write to a temp file for PDO
+                    $decoded = base64_decode($sslCa, true);
+                    if ($decoded !== false && strlen($decoded) > 50) {
+                        $tempCert = sys_get_temp_dir() . '/aiven-ca-' . md5($sslCa) . '.pem';
+
+                        // Check if decoded content is DER (binary) or PEM (text)
+                        if (str_starts_with($decoded, "-----BEGIN CERTIFICATE-----")) {
+                            // Already PEM text
+                            file_put_contents($tempCert, $decoded);
+                        } else {
+                            // DER binary — write and convert using openssl if available
+                            $derFile = $tempCert . '.der';
+                            file_put_contents($derFile, $decoded);
+                            $output = [];
+                            $exitCode = 0;
+                            exec("openssl x509 -inform DER -in " . escapeshellarg($derFile) . " -out " . escapeshellarg($tempCert) . " 2>&1", $output, $exitCode);
+                            if ($exitCode !== 0 || !file_exists($tempCert)) {
+                                // Fallback: use raw DER (PDO may accept it)
+                                rename($derFile, $tempCert);
+                            } else {
+                                @unlink($derFile);
+                            }
+                        }
+
+                        if (file_exists($tempCert) && filesize($tempCert) > 0) {
+                            $sslCaPath = $tempCert;
+                        }
+                    }
+                }
+
+                if ($sslCaPath !== null) {
+                    $options[\PDO::MYSQL_ATTR_SSL_CA] = $sslCaPath;
+                    if ($sslVerify) {
+                        $options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+                    }
                 }
             }
 

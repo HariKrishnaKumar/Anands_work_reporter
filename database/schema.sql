@@ -1,11 +1,6 @@
 -- Daily Work Report Database Schema
--- For XAMPP MariaDB/MySQL
-
-CREATE DATABASE IF NOT EXISTS `daily_work_report`
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE `daily_work_report`;
+-- Works with any MySQL database (Aiven defaultdb, local daily_work_report, etc.)
+-- The database is determined by the DB_DATABASE env var at connection time.
 
 -- Users table
 CREATE TABLE IF NOT EXISTS `users` (
