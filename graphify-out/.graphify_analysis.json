@@ -1,0 +1,473 @@
+{
+  "communities": {
+    "0": [
+      "src_controllers_authcontroller_authcontroller_devlogin",
+      "src_controllers_authcontroller_authcontroller_login",
+      "src_controllers_authcontroller_authcontroller_loginform",
+      "src_controllers_authcontroller_authcontroller_logout",
+      "src_controllers_filecontroller",
+      "src_controllers_filecontroller_filecontroller",
+      "src_controllers_filecontroller_filecontroller_serve",
+      "src_controllers_homecontroller_homecontroller_index",
+      "src_controllers_reportcontroller_reportcontroller_add",
+      "src_controllers_reportcontroller_reportcontroller_preview",
+      "src_controllers_reportcontroller_reportcontroller_save",
+      "src_controllers_reportcontroller_reportcontroller_view",
+      "src_helpers_helpers",
+      "src_helpers_helpers_baseurl",
+      "src_helpers_helpers_csrffield",
+      "src_helpers_helpers_csrftoken",
+      "src_helpers_helpers_currentuser",
+      "src_helpers_helpers_currentuserid",
+      "src_helpers_helpers_e",
+      "src_helpers_helpers_formatdate",
+      "src_helpers_helpers_formatfilesize",
+      "src_helpers_helpers_fulldate",
+      "src_helpers_helpers_getfileicon",
+      "src_helpers_helpers_getflash",
+      "src_helpers_helpers_getgreeting",
+      "src_helpers_helpers_isdevenvironment",
+      "src_helpers_helpers_isloggedin",
+      "src_helpers_helpers_redirect",
+      "src_helpers_helpers_sanitizestring",
+      "src_helpers_helpers_setflash",
+      "src_helpers_helpers_url",
+      "src_helpers_helpers_validatecsrf",
+      "src_middleware_authmiddleware",
+      "src_middleware_authmiddleware_authmiddleware",
+      "src_middleware_authmiddleware_authmiddleware_check",
+      "src_middleware_authmiddleware_authmiddleware_guest",
+      "src_services_authservice_authservice_devlogin"
+    ],
+    "1": [
+      "src_controllers_homecontroller",
+      "src_controllers_homecontroller_homecontroller",
+      "src_controllers_homecontroller_homecontroller_construct",
+      "src_controllers_reportcontroller",
+      "src_controllers_reportcontroller_reportcontroller",
+      "src_controllers_reportcontroller_reportcontroller_construct",
+      "src_controllers_reportcontroller_reportcontroller_success",
+      "src_repositories_workreportrepository_php_pdo",
+      "src_repositories_workreportrepository_workreportrepository",
+      "src_repositories_workreportrepository_workreportrepository_addfilewithdata",
+      "src_repositories_workreportrepository_workreportrepository_create",
+      "src_repositories_workreportrepository_workreportrepository_findall",
+      "src_repositories_workreportrepository_workreportrepository_findallbyuser",
+      "src_repositories_workreportrepository_workreportrepository_findbyidanduser",
+      "src_repositories_workreportrepository_workreportrepository_getfilebyid",
+      "src_repositories_workreportrepository_workreportrepository_getfilesbyreport",
+      "src_repositories_workreportrepository_workreportrepository_getfilesbyreportid",
+      "src_repositories_workreportrepository_workreportrepository_searchbyuser",
+      "src_services_filestorageservice",
+      "src_services_filestorageservice_filestorageservice",
+      "src_services_filestorageservice_filestorageservice_construct",
+      "src_services_filestorageservice_filestorageservice_stagefiles",
+      "src_services_filestorageservice_filestorageservice_storestagedfiles",
+      "src_services_filestorageservice_filestorageservice_validatefiles",
+      "src_services_workreportservice",
+      "src_services_workreportservice_workreportservice",
+      "src_services_workreportservice_workreportservice_construct",
+      "src_services_workreportservice_workreportservice_getfile",
+      "src_services_workreportservice_workreportservice_getreport",
+      "src_services_workreportservice_workreportservice_getuserreports",
+      "src_services_workreportservice_workreportservice_savereport",
+      "src_services_workreportservice_workreportservice_searchuserreports",
+      "src_services_workreportservice_workreportservice_validate"
+    ],
+    "2": [
+      "google_client",
+      "google_service_sheets",
+      "google_service_sheets_valuerange",
+      "sheets",
+      "src_config_googlesheets",
+      "src_config_googlesheets_googlesheets",
+      "src_config_googlesheets_googlesheets_getcredentialspath",
+      "src_config_googlesheets_googlesheets_getspreadsheetid",
+      "src_config_googlesheets_googlesheets_getworksheet",
+      "src_config_googlesheets_googlesheets_isenabled",
+      "src_controllers_sheetscontroller",
+      "src_controllers_sheetscontroller_sheetscontroller",
+      "src_controllers_sheetscontroller_sheetscontroller_syncall",
+      "src_repositories_googlesheetsrepository",
+      "src_repositories_googlesheetsrepository_googlesheetsrepository",
+      "src_repositories_googlesheetsrepository_googlesheetsrepository_appendrow",
+      "src_repositories_googlesheetsrepository_googlesheetsrepository_findrowbyreportid",
+      "src_repositories_googlesheetsrepository_googlesheetsrepository_getallreportids",
+      "src_repositories_googlesheetsrepository_googlesheetsrepository_getservice",
+      "src_repositories_googlesheetsrepository_googlesheetsrepository_spreadsheetid",
+      "src_repositories_googlesheetsrepository_googlesheetsrepository_updaterow",
+      "src_repositories_googlesheetsrepository_googlesheetsrepository_worksheetrange",
+      "src_services_googlesheetssyncservice",
+      "src_services_googlesheetssyncservice_googlesheetssyncservice",
+      "src_services_googlesheetssyncservice_googlesheetssyncservice_construct",
+      "src_services_googlesheetssyncservice_googlesheetssyncservice_syncall",
+      "src_services_googlesheetssyncservice_googlesheetssyncservice_syncreport"
+    ],
+    "3": [
+      "dotenv_dotenv",
+      "public_api_unsplash",
+      "public_index",
+      "src_config_database",
+      "src_config_database_database",
+      "src_config_database_database_getconnection",
+      "src_config_database_database_loadenv",
+      "src_config_database_php_pdo",
+      "src_config_unsplash",
+      "src_config_unsplash_unsplash",
+      "src_config_unsplash_unsplash_isconfigured",
+      "src_config_unsplash_unsplash_key",
+      "src_repositories_userrepository",
+      "src_repositories_userrepository_userrepository_construct",
+      "src_repositories_workreportrepository",
+      "src_repositories_workreportrepository_workreportrepository_construct"
+    ],
+    "4": [
+      "composer",
+      "composer_autoload",
+      "composer_autoload_files",
+      "composer_autoload_psr_4",
+      "composer_config",
+      "composer_config_optimize_autoloader",
+      "composer_description",
+      "composer_name",
+      "composer_psr_4_app",
+      "composer_require",
+      "composer_require_altorouter_altorouter",
+      "composer_require_google_apiclient",
+      "composer_require_php",
+      "composer_require_vlucas_phpdotenv",
+      "composer_type"
+    ],
+    "5": [
+      "ref_playwright_test",
+      "tests_playwright_playwright_config",
+      "tests_playwright_playwright_config_defineconfig",
+      "tests_playwright_scripts_inspect_yajurvedh",
+      "tests_playwright_scripts_inspect_yajurvedh_chromium",
+      "tests_playwright_tests_home_spec",
+      "tests_playwright_tests_home_spec_test_expect",
+      "tests_playwright_tests_login_spec",
+      "tests_playwright_tests_login_spec_test_expect",
+      "tests_playwright_tests_responsive_spec",
+      "tests_playwright_tests_responsive_spec_test_expect",
+      "tests_playwright_tests_ui_qa_spec",
+      "tests_playwright_tests_ui_qa_spec_breakpoints",
+      "tests_playwright_tests_ui_qa_spec_test_expect"
+    ],
+    "6": [
+      "public_assets_js_app_initloginhero",
+      "public_assets_js_app_initloginhero_applytextcolor",
+      "public_assets_js_app_initloginhero_displayimage",
+      "public_assets_js_app_initloginhero_fetchimages",
+      "public_assets_js_app_initloginhero_getcachedimages",
+      "public_assets_js_app_initloginhero_getcachedimagesstale",
+      "public_assets_js_app_initloginhero_getluminance",
+      "public_assets_js_app_initloginhero_getrandomquery",
+      "public_assets_js_app_initloginhero_getrandomquote",
+      "public_assets_js_app_initloginhero_hextorgb",
+      "public_assets_js_app_initloginhero_nextimage",
+      "public_assets_js_app_initloginhero_setcachedimages",
+      "public_assets_js_app_initloginhero_startrotation"
+    ],
+    "7": [
+      "src_controllers_authcontroller",
+      "src_controllers_authcontroller_authcontroller",
+      "src_controllers_authcontroller_authcontroller_construct",
+      "src_repositories_userrepository_php_pdo",
+      "src_repositories_userrepository_userrepository",
+      "src_repositories_userrepository_userrepository_findbyemail",
+      "src_repositories_userrepository_userrepository_findbyid",
+      "src_repositories_userrepository_userrepository_getfirstuser",
+      "src_services_authservice",
+      "src_services_authservice_authservice",
+      "src_services_authservice_authservice_construct",
+      "src_services_authservice_authservice_login"
+    ],
+    "8": [
+      "tests_playwright_tests_add_report_spec",
+      "tests_playwright_tests_add_report_spec_clickaddreport",
+      "tests_playwright_tests_add_report_spec_test_expect",
+      "tests_playwright_tests_authorization_spec",
+      "tests_playwright_tests_authorization_spec_clickaddreport",
+      "tests_playwright_tests_authorization_spec_fs",
+      "tests_playwright_tests_authorization_spec_test_expect",
+      "tests_playwright_tests_helpers",
+      "tests_playwright_tests_helpers_clickaddreport",
+      "tests_playwright_tests_report_details_spec",
+      "tests_playwright_tests_report_details_spec_clickaddreport",
+      "tests_playwright_tests_report_details_spec_test_expect"
+    ],
+    "9": [
+      "opencode_plugins_graphify",
+      "opencode_plugins_graphify_graphifyplugin",
+      "opencode_plugins_graphify_rationale_4",
+      "ref_fs",
+      "ref_path",
+      "tests_playwright_tests_file_upload_spec",
+      "tests_playwright_tests_file_upload_spec_clickaddreport",
+      "tests_playwright_tests_file_upload_spec_fs",
+      "tests_playwright_tests_file_upload_spec_path",
+      "tests_playwright_tests_file_upload_spec_test_expect"
+    ],
+    "10": [
+      "public_assets_js_app",
+      "public_assets_js_app_getsystemtheme",
+      "public_assets_js_app_gettheme",
+      "public_assets_js_app_initnavpill",
+      "public_assets_js_app_initnavpill_positionpill",
+      "public_assets_js_app_initpageanimation",
+      "public_assets_js_app_initsearch",
+      "public_assets_js_app_initsearch_filterreports",
+      "public_assets_js_app_settheme",
+      "public_assets_js_app_toggletheme"
+    ],
+    "11": [
+      "tests_playwright_package",
+      "tests_playwright_package_devdependencies",
+      "tests_playwright_package_devdependencies_playwright_test",
+      "tests_playwright_package_name",
+      "tests_playwright_package_private",
+      "tests_playwright_package_scripts",
+      "tests_playwright_package_scripts_test",
+      "tests_playwright_package_scripts_test_headed",
+      "tests_playwright_package_version"
+    ],
+    "12": [
+      "tests_playwright_tests_gstack_qa_spec",
+      "tests_playwright_tests_gstack_qa_spec_fs",
+      "tests_playwright_tests_gstack_qa_spec_issues",
+      "tests_playwright_tests_gstack_qa_spec_logissue",
+      "tests_playwright_tests_gstack_qa_spec_path",
+      "tests_playwright_tests_gstack_qa_spec_ss_dir",
+      "tests_playwright_tests_gstack_qa_spec_test_expect"
+    ],
+    "13": [
+      "ref_playwright",
+      "tests_playwright_verify_all_breakpoints",
+      "tests_playwright_verify_all_breakpoints_chromium",
+      "tests_playwright_verify_all_breakpoints_viewports",
+      "tests_playwright_verify_login_bg",
+      "tests_playwright_verify_login_bg_chromium"
+    ],
+    "14": [
+      "tests_playwright_tests_login_desktop_spec",
+      "tests_playwright_tests_login_desktop_spec_desktopbps",
+      "tests_playwright_tests_login_desktop_spec_mobilebps",
+      "tests_playwright_tests_login_desktop_spec_tabletbps",
+      "tests_playwright_tests_login_desktop_spec_test_expect"
+    ],
+    "15": [
+      "db_tests",
+      "db_tests_convertto_hexstring",
+      "db_tests_measure_mysql",
+      "db_tests_run_mysql"
+    ],
+    "16": [
+      "tests_playwright_tests_review_save_spec",
+      "tests_playwright_tests_review_save_spec_clickaddreport",
+      "tests_playwright_tests_review_save_spec_fs",
+      "tests_playwright_tests_review_save_spec_test_expect"
+    ],
+    "17": [
+      "src_views_auth_login"
+    ],
+    "18": [
+      "src_views_home_index"
+    ],
+    "19": [
+      "src_views_layouts_footer"
+    ],
+    "20": [
+      "src_views_layouts_main"
+    ],
+    "21": [
+      "src_views_report_add"
+    ],
+    "22": [
+      "src_views_report_not_found"
+    ],
+    "23": [
+      "src_views_report_review"
+    ],
+    "24": [
+      "src_views_report_success"
+    ],
+    "25": [
+      "src_views_report_view"
+    ]
+  },
+  "cohesion": {
+    "0": 0.0960960960960961,
+    "1": 0.0928030303030303,
+    "2": 0.150997150997151,
+    "3": 0.13333333333333333,
+    "4": 0.13333333333333333,
+    "5": 0.14285714285714285,
+    "6": 0.2692307692307692,
+    "7": 0.24242424242424243,
+    "8": 0.21212121212121213,
+    "9": 0.2222222222222222,
+    "10": 0.26666666666666666,
+    "11": 0.2222222222222222,
+    "12": 0.2857142857142857,
+    "13": 0.3333333333333333,
+    "14": 0.4,
+    "15": 0.5,
+    "16": 0.5,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_repositories_workreportrepository_workreportrepository",
+      "label": "WorkReportRepository",
+      "degree": 29
+    },
+    {
+      "id": "src_repositories_userrepository_userrepository",
+      "label": "UserRepository",
+      "degree": 18
+    },
+    {
+      "id": "src_middleware_authmiddleware_authmiddleware",
+      "label": "AuthMiddleware",
+      "degree": 17
+    },
+    {
+      "id": "src_config_googlesheets_googlesheets",
+      "label": "GoogleSheets",
+      "degree": 16
+    },
+    {
+      "id": "src_repositories_googlesheetsrepository_googlesheetsrepository",
+      "label": "GoogleSheetsRepository",
+      "degree": 16
+    },
+    {
+      "id": "src_services_workreportservice_workreportservice",
+      "label": "WorkReportService",
+      "degree": 15
+    },
+    {
+      "id": "ref_playwright_test",
+      "label": "@playwright/test",
+      "degree": 14
+    },
+    {
+      "id": "src_services_googlesheetssyncservice_googlesheetssyncservice",
+      "label": "GoogleSheetsSyncService",
+      "degree": 13
+    },
+    {
+      "id": "public_assets_js_app_initloginhero",
+      "label": "initLoginHero()",
+      "degree": 13
+    },
+    {
+      "id": "src_services_filestorageservice_filestorageservice",
+      "label": "FileStorageService",
+      "degree": 12
+    }
+  ],
+  "surprises": [
+    {
+      "source": "GoogleSheetsSyncService",
+      "target": "WorkReportRepository",
+      "source_files": [
+        "src/Services/GoogleSheetsSyncService.php",
+        "src/Repositories/WorkReportRepository.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "WorkReportService",
+      "target": "GoogleSheetsSyncService",
+      "source_files": [
+        "src/Services/WorkReportService.php",
+        "src/Services/GoogleSheetsSyncService.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "GoogleSheetsSyncService",
+      "target": "UserRepository",
+      "source_files": [
+        "src/Services/GoogleSheetsSyncService.php",
+        "src/Repositories/UserRepository.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "HomeController",
+      "target": "WorkReportService",
+      "source_files": [
+        "src/Controllers/HomeController.php",
+        "src/Services/WorkReportService.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "ReportController",
+      "target": "FileStorageService",
+      "source_files": [
+        "src/Controllers/ReportController.php",
+        "src/Services/FileStorageService.php"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `WorkReportRepository` connect `WorkReportRepository` to `helpers.php`, `GoogleSheets`, `Database`?",
+      "why": "High betweenness centrality (0.088) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `AuthMiddleware` connect `helpers.php` to `WorkReportRepository`, `UserRepository`?",
+      "why": "High betweenness centrality (0.051) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `UserRepository` connect `UserRepository` to `WorkReportRepository`, `GoogleSheets`, `Database`?",
+      "why": "High betweenness centrality (0.050) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `@playwright/test`, `name`, `private` to the rest of the system?",
+      "why": "49 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `helpers.php` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.0960960960960961 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `WorkReportRepository` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.0928030303030303 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Database` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
