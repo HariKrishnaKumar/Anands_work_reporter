@@ -8,11 +8,11 @@
 async function clickAddReport(page) {
   const viewportWidth = page.viewportSize()?.width || 390;
   if (viewportWidth >= 768) {
-    // Tablet/Desktop: use sidebar nav
+    // Tablet/Desktop: use sidebar nav (second item)
     await page.click('.sidebar-nav-item:nth-child(2)');
   } else {
-    // Mobile: use bottom nav
-    await page.click('.nav-item-add');
+    // Mobile: use bottom nav (the "Add" link)
+    await page.click('.bottom-nav .nav-item >> text=Add');
   }
 }
 

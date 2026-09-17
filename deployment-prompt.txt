@@ -1,0 +1,304 @@
+You are preparing my existing Yajurevedh Work Report application for production deployment.
+
+FIRST: Read the private file:
+
+deployment-secrets.txt
+
+This file contains the deployment credentials and configuration required for the current deployment.
+
+IMPORTANT SECURITY RULES:
+- Never commit deployment-secrets.txt to Git.
+- Never copy its secret values into source code.
+- Never hardcode passwords, API keys, database credentials, or certificates.
+- Never print secret values in the terminal output, logs, screenshots, or final report.
+- Use environment variables / Render Secret Files where appropriate.
+- If the repository already has environment variable names, preserve them where practical instead of unnecessarily renaming them.
+
+==================================================
+CURRENT DEPLOYMENT ARCHITECTURE
+==================================================
+
+GitHub
+   ↓
+Render Web Service
+   ↓
+Docker
+   ↓
+Apache + PHP
+   ↓
+Aiven MySQL
+
+Current local development:
+XAMPP + Apache + PHP + MariaDB/MySQL
+
+Production:
+Render + Docker + Aiven MySQL
+
+==================================================
+YOUR TASK
+==================================================
+
+1. Inspect the entire existing project before modifying anything.
+
+2. Read deployment-secrets.txt and understand:
+   - Aiven MySQL configuration
+   - Render configuration
+   - Unsplash configuration
+   - Existing application configuration
+
+3. Do NOT implement Zoho authentication.
+   Zoho is intentionally postponed.
+   Do not ask me for Zoho Client ID, Client Secret, Redirect URI, or other Zoho credentials.
+
+4. Do NOT implement Google Sheets integration.
+
+5. Do NOT implement OCI Object Storage or Cloudflare R2.
+
+6. Do NOT redesign the application or change its existing approved UI unless a change is strictly required for deployment compatibility.
+
+==================================================
+DOCKER / RENDER
+==================================================
+
+Prepare the application for Render using Docker.
+
+Create or update the required:
+
+- Dockerfile
+- .dockerignore
+- .env.example
+- Render-compatible Apache/PHP configuration if required
+
+The container must:
+
+- Run Apache + PHP correctly.
+- Listen on 0.0.0.0.
+- Respect Render's PORT environment variable where required.
+- Serve the existing application correctly.
+- Have correct Apache document root configuration.
+- Handle PHP requests correctly.
+- Avoid Windows/XAMPP-specific assumptions.
+
+Do not blindly overwrite existing configuration.
+Inspect the project first and integrate with its current structure.
+
+==================================================
+AIVEN MYSQL
+==================================================
+
+Configure the application to connect to the Aiven MySQL database using the credentials from deployment-secrets.txt.
+
+Production database connection must:
+
+- Use environment variables.
+- Support Aiven SSL/TLS.
+- Never hardcode database credentials.
+- Never commit the Aiven CA certificate into Git.
+- Use the CA certificate through the appropriate Render Secret File mechanism or equivalent secure configuration.
+
+Verify that the application's existing database connection code works correctly on Linux/PHP.
+
+Check for:
+- hostname handling
+- port handling
+- username/password handling
+- database name
+- SSL/TLS configuration
+- PDO/MySQLi compatibility
+- connection errors
+
+Do not destroy or recreate production data unnecessarily.
+
+==================================================
+UNSPLASH
+==================================================
+
+Keep the existing Unsplash integration.
+
+Use the Access Key securely through environment configuration.
+
+Do NOT use the Unsplash Secret Key if the application does not require it.
+
+Preserve the existing strategy:
+
+- Approximately one Unsplash API request per hour.
+- Do not request a new image every few seconds.
+- Do not request separate left/right images.
+- One image is used as the full-screen login background.
+- Cache/reuse the current image URL where the existing implementation supports it.
+
+Do not expose the Access Key in frontend JavaScript if the current architecture can avoid it.
+
+==================================================
+HEALTH CHECK
+==================================================
+
+Add a simple:
+
+/health
+
+endpoint.
+
+It should return a simple successful response when the application/container is running.
+
+Do not expose:
+- database passwords
+- API keys
+- environment variables
+- internal secrets
+- sensitive system information
+
+If useful, include a minimal application status response such as:
+
+OK
+
+or a small JSON response without secrets.
+
+==================================================
+FILES / STORAGE
+==================================================
+
+Do not implement OCI Object Storage or R2 yet.
+
+Do not pretend object storage is configured.
+
+Inspect the current attachment/file-storage implementation and make sure deployment does not fail because of Windows-specific paths.
+
+If the current application stores attachment metadata in MySQL, preserve that behavior.
+
+Do not introduce a new storage provider during this deployment unless absolutely required for the application to run.
+
+==================================================
+SECURITY AUDIT
+==================================================
+
+Before finishing, inspect the repository for accidentally tracked secrets.
+
+Check for:
+- .env
+- API keys
+- database passwords
+- service-account JSON files
+- certificates
+- private credentials
+- deployment-secrets.txt
+- other secret files
+
+Make sure secret files are covered by .gitignore where appropriate.
+
+Do NOT delete important application files blindly.
+
+Report only the existence/type of a potential secret.
+Never print its actual value.
+
+==================================================
+LOCAL VERIFICATION
+==================================================
+
+After implementation:
+
+1. Build the Docker image.
+
+2. Run the application locally using Docker.
+
+3. Verify:
+   - homepage loads
+   - PHP executes
+   - database connection works using test configuration
+   - /health works
+   - login/current authentication behavior still works
+   - reports load
+   - adding a report works
+   - existing UI is not broken
+   - Unsplash integration does not break the application
+
+If a real Aiven connection is safe and available through the supplied configuration, verify the production database connection.
+
+Do not modify production data just for testing.
+
+==================================================
+PLAYWRIGHT TESTING
+==================================================
+
+After implementation, run Playwright against the actual running application.
+
+Test these viewport sizes:
+
+320x568
+390x844
+414x896
+768x1024
+1366x768
+1920x1080
+
+Check:
+
+- no horizontal overflow
+- no clipped content
+- no broken navigation
+- no broken buttons
+- no broken forms
+- no layout overlap
+- mobile bottom navigation works
+- desktop sidebar works
+- login page works
+- home page works
+- add report page works
+- review flow works
+- success flow works
+- report details remain read-only
+- theme behavior remains functional
+- login background remains one full-screen image
+- no unwanted split background/seam
+- no giant floating + button
+- no accidental profile navigation
+- attachments UI does not break
+
+Take screenshots where useful for visual verification.
+
+==================================================
+FAILURE HANDLING
+==================================================
+
+If a test fails:
+
+1. Identify the actual cause.
+2. Fix it.
+3. Re-run the failed test.
+4. Re-run the relevant regression tests.
+5. Do not stop after making an unverified change.
+
+Do not claim the deployment preparation is complete unless the final verification has actually been performed.
+
+==================================================
+FINAL REPORT
+==================================================
+
+At the end, provide:
+
+1. Files created.
+2. Files modified.
+3. Deployment architecture.
+4. Environment variables required by Render.
+5. Render Secret Files required, if any.
+6. Aiven configuration requirements.
+7. Unsplash configuration requirements.
+8. GitHub requirements.
+9. Local Docker test result.
+10. Playwright test result for every viewport.
+11. Any remaining issue.
+12. Any manual steps I must perform in Render/Aiven.
+
+IMPORTANT:
+
+Clearly distinguish:
+
+VERIFIED
+from
+REQUIRES MANUAL CONFIGURATION
+from
+NOT VERIFIED
+
+Do not claim that Render deployment itself is complete unless you actually have access to Render and successfully deployed/tested it.
+
+The objective is to make the existing application production-deployment-ready without changing its approved functionality or UI.

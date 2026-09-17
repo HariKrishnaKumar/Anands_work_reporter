@@ -6,6 +6,8 @@
 **Audience:** Client/Stakeholders + Developers
 
 ---
+## command to activate the project
+php -S localhost:8000 -t public
 
 ## Table of Contents
 

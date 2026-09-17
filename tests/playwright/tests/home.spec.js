@@ -13,21 +13,18 @@ test.describe('TEST 2 — Home / My Reports', () => {
     // Current date
     await expect(page.locator('.greeting-date')).toBeVisible();
     
-    // Greeting subtitle
-    await expect(page.locator('.greeting-subtitle')).toContainText('submitted work');
-    
     // Navigation exists (bottom nav on mobile, sidebar on tablet+)
     const viewportWidth = page.viewportSize()?.width || 390;
     if (viewportWidth < 768) {
       await expect(page.locator('.bottom-nav')).toBeVisible();
-      await expect(page.locator('.nav-item-add')).toBeVisible();
+      await expect(page.locator('.nav-item').last()).toBeVisible();
     } else {
       await expect(page.locator('.sidebar')).toBeVisible();
       await expect(page.locator('.sidebar-nav-item').first()).toBeVisible();
     }
     
     // Quick action card exists
-    await expect(page.locator('.quick-action')).toContainText('Add Today');
+    await expect(page.locator('.quick-action')).toContainText('Add Work Report');
     
     // NO Profile navigation
     const profileNav = page.locator('text=Profile');

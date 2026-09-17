@@ -6,13 +6,13 @@ test.describe('TEST 1 — Login Page', () => {
     await page.goto('login');
     
     // Page loads with correct title
-    await expect(page).toHaveTitle(/Daily Work Report/i);
+    await expect(page).toHaveTitle(/Yajurvedh Work Report/i);
     
     // App name visible
-    await expect(page.locator('.login-title')).toContainText('Daily Work Report');
+    await expect(page.locator('.login-title')).toContainText('Yajurvedh Work Report');
     
     // Subtitle visible
-    await expect(page.locator('.login-subtitle')).toBeVisible();
+    await expect(page.locator('.login-subtitle')).toContainText('Zoho');
     
     // Email and password fields exist
     await expect(page.locator('#email')).toBeVisible();

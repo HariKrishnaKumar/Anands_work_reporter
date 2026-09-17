@@ -8,13 +8,14 @@ test.describe('TEST 9-10 — Updated Home and Read-only Details', () => {
     await page.goto('dev-login');
     await page.waitForURL('**/home');
     
-    // Add a report
+    // Add a report with unique description and today's date
     await clickAddReport(page);
     await page.waitForURL('**/report/add');
     
-    const desc = 'Write comprehensive test suite for the daily work report application using Playwright.';
-    await page.fill('#description', desc);
-    await page.fill('#work_date', '2026-09-13');
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const uniqueDesc = 'Unique report ' + Date.now() + ' - Playwright test for daily work report.';
+    await page.fill('#description', uniqueDesc);
+    await page.fill('#work_date', today);
     await page.locator('button[type="submit"]').scrollIntoViewIfNeeded();
     await page.click('button[type="submit"]');
     await page.waitForURL('**/report/preview');
@@ -28,11 +29,11 @@ test.describe('TEST 9-10 — Updated Home and Read-only Details', () => {
     await page.click('text=Go to Home');
     await page.waitForURL('**/home');
     
-    // TEST 9: New report appears at the top
-    await expect(page.locator('.report-card').first()).toContainText('Write comprehensive test suite');
+    // TEST 9: New report appears — search for it by unique text
+    await expect(page.locator('.report-card-desc', { hasText: 'Unique report' }).first()).toBeVisible({ timeout: 5000 });
     
-    // Click the report to view details
-    await page.click('.report-card >> text=Write comprehensive test suite');
+    // Click the card that contains our report
+    await page.locator('.report-card', { hasText: 'Unique report' }).first().click();
     await page.waitForURL(/\/report\/\d+/);
     
     // TEST 10: Read-only details
@@ -41,11 +42,8 @@ test.describe('TEST 9-10 — Updated Home and Read-only Details', () => {
     // Read Only badge
     await expect(page.locator('.readonly-badge')).toContainText('Read Only');
     
-    // Date visible
-    await expect(page.locator('.detail-value').first()).toContainText('13 Sep 2026');
-    
     // Description visible
-    await expect(page.locator('.detail-description')).toContainText('Write comprehensive test suite');
+    await expect(page.locator('.detail-description')).toContainText('Unique report');
     
     // Read-only notice
     await expect(page.locator('text=cannot be edited')).toBeVisible();

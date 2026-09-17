@@ -24,7 +24,16 @@ class HomeController
         AuthMiddleware::check();
         $userId = currentUserId();
         $user = currentUser();
-        $reports = $this->reportService->getUserReports($userId);
+
+        $searchQuery = trim($_GET['q'] ?? '');
+        $searchDate = trim($_GET['date'] ?? '');
+
+        if (!empty($searchQuery) || !empty($searchDate)) {
+            $reports = $this->reportService->searchUserReports($userId, $searchQuery, $searchDate);
+        } else {
+            $reports = $this->reportService->getUserReports($userId);
+        }
+
         require __DIR__ . '/../Views/home/index.php';
     }
 }

@@ -1,6 +1,6 @@
 /* ============================================
    BASE STYLES — Reset, Typography, Forms, Buttons
-   Apple Design Language (Human Interface)
+   Apple-Inspired Premium Productivity UI
    ============================================ */
 
 /* --- Reset --- */
@@ -22,14 +22,14 @@ html {
 body {
   font-family: var(--font-primary);
   font-size: 0.9375rem;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--text-primary);
   background-color: var(--bg-primary);
   min-height: 100vh;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--transition-base), color var(--transition-base);
+  transition: background-color 300ms var(--ease-smooth), color 300ms var(--ease-smooth);
   overflow-x: hidden;
 }
 
@@ -92,10 +92,9 @@ table {
 }
 
 /* ============================================
-   APP LAYOUT — Mobile (default) + Tablet/Desktop (sidebar)
+   APP LAYOUT
    ============================================ */
 
-/* Mobile: single column */
 .app-container {
   max-width: var(--container-max);
   margin: 0 auto;
@@ -105,7 +104,6 @@ table {
   background-color: var(--bg-primary);
 }
 
-/* Sidebar — hidden on mobile by default */
 .sidebar {
   display: none;
 }
@@ -120,30 +118,31 @@ table {
 /* --- Page Content Area --- */
 .page-content {
   padding: var(--space-2xl) var(--space-lg);
-  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
-  animation: fadeIn 0.3s var(--ease-smooth) forwards;
+  padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  animation: pageEnter 0.35s var(--ease-spring) forwards;
 }
 
 /* ============================================
-   TYPOGRAPHY
+   TYPOGRAPHY — Apple-inspired hierarchy
    ============================================ */
 
 .heading-display {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.75rem;
-  line-height: 1.18;
+  line-height: 1.1;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  font-optical-sizing: auto;
 }
 
 .heading-lg {
   font-family: var(--font-primary);
   font-weight: 600;
   font-size: 1.375rem;
-  line-height: 1.25;
+  line-height: 1.2;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .heading-md {
@@ -152,28 +151,29 @@ table {
   font-size: 1.125rem;
   line-height: 1.3;
   color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
 .text-body {
   font-size: 0.9375rem;
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .text-secondary {
   font-size: 0.875rem;
   color: var(--text-secondary);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .text-muted {
   font-size: 0.8125rem;
   color: var(--text-muted);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 /* ============================================
-   FORM ELEMENTS — Apple iOS Style
+   FORM ELEMENTS — iOS-inspired
    ============================================ */
 
 .form-group {
@@ -192,22 +192,27 @@ table {
   width: 100%;
   padding: 12px 14px;
   background: var(--input-bg);
-  border: 1px solid var(--input-border);
+  border: 1.5px solid var(--input-border);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-size: 0.9375rem;
   line-height: 1.5;
-  transition: border-color var(--transition-base), background var(--transition-base);
+  transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
   outline: none;
 }
 
 .form-input:hover {
-  background: rgba(118, 118, 128, 0.15);
+  background: rgba(118, 118, 128, 0.12);
 }
 
 .form-input:focus {
   border-color: var(--input-focus);
   background: var(--input-bg);
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.12);
+}
+
+[data-theme="light"] .form-input:focus {
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.08);
 }
 
 .form-input::placeholder {
@@ -217,7 +222,7 @@ table {
 textarea.form-input {
   min-height: 140px;
   resize: vertical;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .form-hint {
@@ -230,7 +235,7 @@ textarea.form-input {
 }
 
 /* ============================================
-   BUTTONS — Apple Style
+   BUTTONS — Premium with press feedback
    ============================================ */
 
 .btn {
@@ -249,7 +254,7 @@ textarea.form-input {
   white-space: nowrap;
   user-select: none;
   text-decoration: none;
-  transition: all var(--transition-fast);
+  transition: all 180ms var(--ease-spring);
   position: relative;
   overflow: hidden;
 }
@@ -260,7 +265,7 @@ textarea.form-input {
 }
 
 .btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .btn:disabled {
@@ -269,7 +274,7 @@ textarea.form-input {
   pointer-events: none;
 }
 
-/* Primary — Apple Blue */
+/* Primary */
 .btn-primary {
   background: var(--primary);
   color: var(--primary-text);
@@ -357,7 +362,7 @@ textarea.form-input {
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.5;
-  animation: slideDown 0.25s var(--ease-smooth);
+  animation: slideDown 0.25s var(--ease-spring);
 }
 
 .flash-success {
@@ -371,35 +376,35 @@ textarea.form-input {
 }
 
 /* ============================================
-   EMPTY STATE
+   EMPTY STATE — Compact, within workspace
    ============================================ */
 
 .empty-state {
   text-align: center;
-  padding: var(--space-5xl) var(--space-lg);
+  padding: var(--space-4xl) var(--space-lg);
 }
 
 .empty-state svg {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   color: var(--text-muted);
   margin-bottom: var(--space-lg);
-  opacity: 0.4;
+  opacity: 0.35;
 }
 
 .empty-state h3 {
-  font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-family: var(--font-primary);
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: var(--space-sm);
 }
 
 .empty-state p {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--text-muted);
   margin-bottom: var(--space-2xl);
-  max-width: 280px;
+  max-width: 260px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -420,8 +425,8 @@ textarea.form-input {
 }
 
 .spinner {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border: 3px solid var(--border);
   border-top-color: var(--primary);
   border-radius: 50%;
@@ -462,11 +467,18 @@ textarea.form-input {
    ============================================ */
 
 @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pageEnter {
   from {
     opacity: 0;
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -482,15 +494,13 @@ textarea.form-input {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
@@ -498,15 +508,50 @@ textarea.form-input {
   }
 }
 
-@keyframes checkmark {
-  0% {
-    stroke-dashoffset: 24;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
+@keyframes checkmarkDraw {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
 }
 
 .fade-in {
   animation: fadeIn 0.25s var(--ease-smooth) forwards;
+}
+
+/* Staggered entry for list items */
+.stagger-item {
+  opacity: 0;
+  animation: pageEnter 0.35s var(--ease-spring) forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 40ms; }
+.stagger-item:nth-child(3) { animation-delay: 80ms; }
+.stagger-item:nth-child(4) { animation-delay: 120ms; }
+.stagger-item:nth-child(5) { animation-delay: 160ms; }
+.stagger-item:nth-child(6) { animation-delay: 200ms; }
+.stagger-item:nth-child(7) { animation-delay: 240ms; }
+.stagger-item:nth-child(8) { animation-delay: 280ms; }
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .page-content {
+    animation: none;
+  }
+
+  .stagger-item {
+    animation: none;
+    opacity: 1;
+  }
 }

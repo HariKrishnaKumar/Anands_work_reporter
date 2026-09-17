@@ -50,7 +50,8 @@ class AuthController
             redirect('login');
         }
 
-        // Set session
+        // Set session (regenerate ID to prevent session fixation)
+        session_regenerate_id(true);
         $_SESSION['user_id'] = (int)$user['id'];
         $_SESSION['user'] = $user;
 
@@ -74,6 +75,7 @@ class AuthController
         }
 
         unset($user['password_hash']);
+        session_regenerate_id(true);
         $_SESSION['user_id'] = (int)$user['id'];
         $_SESSION['user'] = $user;
 
@@ -82,8 +84,17 @@ class AuthController
 
     public function logout(): void
     {
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params['path'], $params['domain'],
+                $params['secure'], $params['httponly']
+            );
+        }
+        session_regenerate_id(true);
         session_destroy();
-        header('Location: ' . ($_ENV['APP_URL'] ?? '') . '/login');
+        header('Location: ' . url('/login'));
         exit;
     }
 }

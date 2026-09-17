@@ -1,13 +1,7 @@
 /* ============================================
    RESPONSIVE STYLES — Mobile First
-   Apple Design Language (Human Interface)
+   Apple-Inspired Premium Productivity UI
    ============================================ */
-
-/* ============================================
-   CONTAINER SIZES — Mobile only
-   ============================================ */
-
-/* Mobile stays at 480px max — no changes */
 
 /* ============================================
    SMALL PHONES (max 374px)
@@ -16,7 +10,7 @@
 @media (max-width: 374px) {
   .page-content {
     padding: var(--space-lg) var(--space-md);
-    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   }
 
   .heading-display {
@@ -28,7 +22,7 @@
   }
 
   .greeting-text {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
 
   .greeting-name {
@@ -43,12 +37,12 @@
     font-size: 0.875rem;
   }
 
-  .login-card {
-    padding: var(--space-xl);
+  .login-form-panel {
+    padding: var(--space-xl) var(--space-lg);
   }
 
   .login-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
 
   .modal {
@@ -73,6 +67,44 @@
     padding: var(--space-md) var(--space-lg);
     font-size: 0.875rem;
   }
+
+  .search-row {
+    flex-direction: column;
+  }
+
+  .search-date {
+    min-width: auto;
+  }
+
+  /* Theme switcher compact on small screens */
+  .theme-switcher {
+    width: 52px;
+    min-width: 52px;
+    height: 28px;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .bottom-nav {
+    padding: 5px;
+    gap: 2px;
+  }
+
+  .nav-item {
+    padding: 8px 12px;
+    gap: 4px;
+    min-height: 42px;
+  }
+
+  .nav-item span {
+    font-size: 0.6875rem;
+  }
+
+  .nav-pill-bg {
+    height: 42px;
+  }
 }
 
 /* ============================================
@@ -85,7 +117,7 @@
   }
 
   .greeting-text {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
 
   .greeting-name {
@@ -98,11 +130,78 @@
    ============================================ */
 
 @media (min-width: 390px) and (max-width: 414px) {
-  /* Default sizing works well here */
+  /* Ensure header stays stable at this common mobile width */
+  .app-header {
+    padding: var(--space-md) 16px;
+    min-height: 48px;
+  }
+
+  .header-actions {
+    gap: var(--space-sm);
+    flex-shrink: 0;
+  }
+
+  .theme-switcher {
+    width: 56px;
+    min-width: 56px;
+    height: 30px;
+  }
+
+  .bottom-nav {
+    padding: 6px;
+    gap: 4px;
+  }
+
+  .nav-item {
+    padding: 10px 16px;
+    min-height: 44px;
+  }
+
+  .nav-pill-bg {
+    height: 44px;
+  }
+}
+
+/* Exact 412px breakpoint for Pixel devices */
+@media (min-width: 411px) and (max-width: 413px) {
+  .app-header {
+    padding: var(--space-md) 16px;
+    min-height: 48px;
+  }
+
+  .header-actions {
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .theme-switcher {
+    width: 56px;
+    min-width: 56px;
+    height: 30px;
+  }
+
+  .logout-link {
+    width: 36px;
+    height: 36px;
+  }
+
+  .bottom-nav {
+    padding: 6px;
+    gap: 4px;
+  }
+
+  .nav-item {
+    padding: 10px 16px;
+    min-height: 44px;
+  }
+
+  .nav-pill-bg {
+    height: 44px;
+  }
 }
 
 /* ============================================
-   TABLETS (768px+) — Sidebar Layout
+   TABLET (768px+) — Compact Sidebar
    ============================================ */
 
 @media (min-width: 768px) {
@@ -123,12 +222,15 @@
     height: 100dvh;
     position: sticky;
     top: 0;
-    background: var(--bg-secondary);
-    border-right: 0.5px solid var(--border);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-right: 0.5px solid var(--glass-border);
     z-index: var(--z-sidebar);
     padding: var(--space-xl) 0;
     overflow-y: auto;
     flex-shrink: 0;
+    transition: background 300ms var(--ease-smooth);
   }
 
   .sidebar-logo {
@@ -141,8 +243,8 @@
   }
 
   .sidebar-logo svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     color: var(--primary);
     flex-shrink: 0;
   }
@@ -150,7 +252,7 @@
   .sidebar-logo span {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: var(--text-primary);
     letter-spacing: -0.01em;
   }
@@ -173,8 +275,9 @@
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: none;
-    transition: all var(--transition-fast);
+    transition: all 180ms var(--ease-smooth);
     min-height: 40px;
+    position: relative;
   }
 
   .sidebar-nav-item:hover {
@@ -190,6 +293,19 @@
   .sidebar-nav-item.active {
     background: var(--primary-subtle);
     color: var(--primary);
+  }
+
+  /* Subtle accent indicator for active sidebar item */
+  .sidebar-nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 16px;
+    background: var(--primary);
+    border-radius: 0 2px 2px 0;
   }
 
   .sidebar-nav-item svg {
@@ -220,7 +336,7 @@
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: none;
-    transition: all var(--transition-fast);
+    transition: all 180ms var(--ease-smooth);
     min-height: 40px;
     cursor: pointer;
     background: none;
@@ -230,7 +346,7 @@
   }
 
   .sidebar-footer-item:hover {
-    background: rgba(118, 118, 128, 0.12);
+    background: rgba(118, 118, 128, 0.1);
     color: var(--text-primary);
   }
 
@@ -250,6 +366,21 @@
     color: var(--danger);
   }
 
+  /* --- Theme switcher in sidebar --- */
+  .sidebar .sidebar-footer .theme-switcher-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 10px var(--space-lg);
+    min-height: 40px;
+  }
+
+  .sidebar .sidebar-footer .theme-switcher-row .theme-switcher-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
   /* --- Main Area --- */
   .main-area {
     flex: 1;
@@ -260,7 +391,7 @@
     min-height: 100dvh;
   }
 
-  /* --- Header hidden on tablet+ (nav moves to sidebar) --- */
+  /* --- Header hidden on tablet+ --- */
   .app-header {
     display: none;
   }
@@ -289,11 +420,11 @@
   }
 
   .greeting-text {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 
   .greeting-name {
-    font-size: 2.25rem;
+    font-size: 2rem;
   }
 
   /* --- Component adjustments --- */
@@ -301,11 +432,9 @@
     padding: var(--space-lg) var(--space-xl);
   }
 
-  .login-screen {
-    padding: var(--space-3xl);
-  }
+  /* login-page padding only applies on mobile; desktop overrides in components.css */
 
-  .login-card {
+  .login-form-panel {
     padding: var(--space-4xl);
   }
 
@@ -322,16 +451,25 @@
   }
 
   .empty-state {
-    padding: var(--space-6xl) var(--space-2xl);
+    padding: var(--space-5xl) var(--space-2xl);
   }
 
   .action-card {
     max-width: 320px;
   }
+
+  /* Search bar horizontal on tablet */
+  .search-row {
+    flex-direction: row;
+  }
+
+  .search-date {
+    min-width: 160px;
+  }
 }
 
 /* ============================================
-   DESKTOP (1024px+) — Wider Sidebar
+   DESKTOP (1024px+) — Full Sidebar
    ============================================ */
 
 @media (min-width: 1024px) {
@@ -349,16 +487,10 @@
     background: var(--surface-elevated);
   }
 
-  .login-screen {
-    padding: var(--space-4xl);
-  }
-
-  .login-card {
-    padding: var(--space-5xl);
-  }
+  /* login-page padding overridden in components.css for viewport fill */
 
   .success-screen {
-    min-height: 70vh;
+    min-height: 60vh;
   }
 }
 
@@ -368,8 +500,8 @@
 
 @media (min-width: 1366px) {
   .page-content {
-    padding: var(--space-4xl) var(--space-5xl);
-    max-width: 1100px;
+    padding: var(--space-3xl) var(--space-4xl);
+    max-width: 1050px;
   }
 }
 
@@ -379,7 +511,7 @@
 
 @media (min-width: 1920px) {
   .page-content {
-    padding: var(--space-5xl) var(--space-6xl);
+    padding: var(--space-3xl) var(--space-5xl);
     max-width: 1100px;
   }
 }
@@ -408,25 +540,21 @@
     padding: 8px 16px;
   }
 
-  .nav-item-add {
-    width: 56px;
-    height: 56px;
-  }
-
   .file-item-remove {
     width: 36px;
     height: 36px;
     min-width: 36px;
   }
 
-  .theme-toggle {
-    width: 36px;
-    height: 36px;
+  .theme-switcher {
+    width: 56px;
+    min-width: 56px;
+    height: 30px;
   }
 
   .logout-link {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
   }
 }
 
@@ -439,7 +567,8 @@
 .review-section,
 .detail-section,
 .modal,
-.login-card,
+.login-form-panel,
+.login-page,
 .success-screen {
   overflow-wrap: break-word;
   word-break: break-word;
@@ -454,11 +583,12 @@
   .app-header,
   .sidebar,
   .btn,
-  .theme-toggle,
+  .theme-switcher,
   .logout-link,
   .back-link,
   .upload-area,
-  .file-item-remove {
+  .file-item-remove,
+  .search-bar {
     display: none !important;
   }
 
@@ -503,9 +633,55 @@
 
   .report-card:hover,
   .btn-primary:hover,
-  .btn-danger:hover,
-  .nav-item-add:hover {
+  .btn-danger:hover {
     transform: none;
+  }
+
+  .nav-pill-bg {
+    transition: none;
+  }
+
+  .theme-switcher-thumb {
+    transition: none;
+  }
+
+  .login-bg {
+    transition: none;
+  }
+
+  .login-brand-quote {
+    transition: none;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY: REDUCED TRANSPARENCY
+   ============================================ */
+
+@media (prefers-reduced-transparency: reduce) {
+  .app-header,
+  .sidebar,
+  .bottom-nav,
+  .login-form-panel,
+  .modal-overlay {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .app-header {
+    background: var(--bg-secondary);
+  }
+
+  .sidebar {
+    background: var(--bg-secondary);
+  }
+
+  .bottom-nav {
+    background: var(--bg-secondary);
+  }
+
+  .login-form-panel {
+    background: var(--surface);
   }
 }
 

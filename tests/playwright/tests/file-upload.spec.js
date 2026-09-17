@@ -40,9 +40,9 @@ test.describe('TEST 5 — File Upload Validation', () => {
     await page.click('.file-item-remove >> nth=0');
     await expect(page.locator('.file-item')).toHaveCount(1);
     
-    // Clean up
-    fs.unlinkSync(pngFile);
-    fs.unlinkSync(pdfFile);
+    // Clean up (guard against race where OS may have removed temp files)
+    try { if (fs.existsSync(pngFile)) fs.unlinkSync(pngFile); } catch {}
+    try { if (fs.existsSync(pdfFile)) fs.unlinkSync(pdfFile); } catch {}
   });
 
   test('file input accepts correct types', async ({ page }) => {

@@ -1,66 +1,65 @@
 /* ============================================
    DESIGN TOKENS — CSS Custom Properties
-   Apple Design Language (Human Interface)
+   Apple-Inspired Premium Productivity UI
    ============================================ */
 
 :root {
   /* --- Dark Theme (Default) --- */
-  --bg-primary: #000000;
-  --bg-secondary: #1C1C1E;
-  --surface: #1C1C1E;
-  --surface-elevated: #2C2C2E;
-  --border: rgba(255, 255, 255, 0.08);
+  --bg-primary: #0A0A0B;
+  --bg-secondary: #141416;
+  --surface: #1A1A1D;
+  --surface-elevated: #222226;
+  --border: rgba(255, 255, 255, 0.06);
 
-  --text-primary: #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.6);
-  --text-muted: rgba(255, 255, 255, 0.35);
+  --text-primary: #F5F5F7;
+  --text-secondary: rgba(255, 255, 255, 0.55);
+  --text-muted: rgba(255, 255, 255, 0.3);
 
   --primary: #0A84FF;
   --primary-hover: #409CFF;
   --primary-text: #FFFFFF;
-  --primary-subtle: rgba(10, 132, 255, 0.12);
+  --primary-subtle: rgba(10, 132, 255, 0.1);
 
   --success: #30D158;
-  --success-bg: rgba(48, 209, 88, 0.12);
+  --success-bg: rgba(48, 209, 88, 0.1);
   --danger: #FF453A;
-  --danger-bg: rgba(255, 69, 58, 0.12);
+  --danger-bg: rgba(255, 69, 58, 0.1);
   --warning: #FFD60A;
 
-  --input-bg: rgba(118, 118, 128, 0.12);
+  --input-bg: rgba(118, 118, 128, 0.1);
   --input-border: transparent;
   --input-focus: #0A84FF;
 
-  /* Apple Shadows — Dark */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
-
-  /* Legacy aliases — keep for backward compat */
-  --clay-shadow: var(--shadow-sm);
-  --clay-shadow-hover: var(--shadow-md);
-  --clay-shadow-interactive: var(--shadow-md);
-  --clay-inset: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-  --clay-highlight: none;
-  --clay-nav-shadow: 0 -0.5px 0 rgba(255, 255, 255, 0.08);
+  /* Shadows — Tinted to background */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
 
   --modal-overlay: rgba(0, 0, 0, 0.5);
 
-  --nav-bg: rgba(28, 28, 30, 0.85);
-  --nav-border: rgba(255, 255, 255, 0.08);
+  /* Glass Materials — Selective use */
+  --glass-bg: rgba(28, 28, 30, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-blur: blur(20px) saturate(180%);
 
-  --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+  --nav-bg: rgba(28, 28, 30, 0.8);
+  --nav-border: rgba(255, 255, 255, 0.06);
+
+  --scrollbar-thumb: rgba(255, 255, 255, 0.12);
   --scrollbar-track: transparent;
 
-  --file-area-bg: rgba(118, 118, 128, 0.08);
-  --file-area-border: rgba(118, 118, 128, 0.2);
+  --file-area-bg: rgba(118, 118, 128, 0.06);
+  --file-area-border: rgba(118, 118, 128, 0.18);
 
-  --tag-bg: rgba(10, 132, 255, 0.12);
+  --tag-bg: rgba(10, 132, 255, 0.1);
   --tag-text: #0A84FF;
 
-  /* Typography — Apple SF Pro */
-  --font-primary: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
-  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+  /* Typography */
+  --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: 'Century Gothic', 'Poppins', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   /* Spacing Scale (4px base) */
   --space-2xs: 2px;
@@ -75,7 +74,7 @@
   --space-5xl: 48px;
   --space-6xl: 64px;
 
-  /* Border Radius — Apple style */
+  /* Border Radius */
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -89,18 +88,29 @@
   --container-max-large: 1100px;
 
   /* Sidebar Layout */
-  --sidebar-width-tablet: 220px;
+  --sidebar-width-tablet: 210px;
   --sidebar-width-desktop: 250px;
 
-  /* Transitions — Apple spring-like feel */
-  --ease-clay: cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* Transitions — Spring-like feel */
   --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-fast: 100ms;
   --duration-normal: 200ms;
   --duration-slow: 300ms;
   --transition-fast: 100ms var(--ease-smooth);
   --transition-base: 200ms var(--ease-smooth);
   --transition-slow: 300ms var(--ease-smooth);
+
+  /* Theme Switcher — Compact Premium Pill */
+  --switcher-width: 56px;
+  --switcher-height: 30px;
+  --switcher-thumb: 24px;
+  --switcher-padding: 3px;
+
+  /* Navigation Pill */
+  --nav-pill-height: 56px;
+  --nav-pill-radius: 28px;
+  --nav-pill-transition: 230ms cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Z-Index Scale */
   --z-base: 0;
@@ -117,56 +127,56 @@
 
 /* --- Light Theme --- */
 [data-theme="light"] {
-  --bg-primary: #F2F2F7;
+  --bg-primary: #F5F5F7;
   --bg-secondary: #FFFFFF;
   --surface: #FFFFFF;
   --surface-elevated: #FFFFFF;
-  --border: rgba(0, 0, 0, 0.08);
+  --border: rgba(0, 0, 0, 0.06);
 
   --text-primary: #1D1D1F;
-  --text-secondary: rgba(0, 0, 0, 0.55);
-  --text-muted: rgba(0, 0, 0, 0.3);
+  --text-secondary: rgba(0, 0, 0, 0.5);
+  --text-muted: rgba(0, 0, 0, 0.28);
 
   --primary: #007AFF;
   --primary-hover: #0066DD;
   --primary-text: #FFFFFF;
-  --primary-subtle: rgba(0, 122, 255, 0.08);
+  --primary-subtle: rgba(0, 122, 255, 0.06);
 
   --success: #34C759;
-  --success-bg: rgba(52, 199, 89, 0.1);
+  --success-bg: rgba(52, 199, 89, 0.08);
   --danger: #FF3B30;
-  --danger-bg: rgba(255, 59, 48, 0.1);
+  --danger-bg: rgba(255, 59, 48, 0.08);
   --warning: #FF9500;
 
-  --input-bg: rgba(118, 118, 128, 0.06);
+  --input-bg: rgba(118, 118, 128, 0.04);
   --input-border: transparent;
   --input-focus: #007AFF;
 
-  /* Apple Shadows — Light */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
-
-  --clay-shadow: var(--shadow-sm);
-  --clay-shadow-hover: var(--shadow-md);
-  --clay-shadow-interactive: var(--shadow-md);
-  --clay-inset: inset 0 1px 3px rgba(0, 0, 0, 0.06);
-  --clay-highlight: none;
-  --clay-nav-shadow: 0 -0.5px 0 rgba(0, 0, 0, 0.08);
+  /* Shadows — Light */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
 
   --modal-overlay: rgba(0, 0, 0, 0.3);
 
-  --nav-bg: rgba(255, 255, 255, 0.85);
-  --nav-border: rgba(0, 0, 0, 0.08);
+  /* Glass Materials — Light */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-blur: blur(20px) saturate(180%);
 
-  --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+  --nav-bg: rgba(255, 255, 255, 0.8);
+  --nav-border: rgba(0, 0, 0, 0.06);
+
+  --scrollbar-thumb: rgba(0, 0, 0, 0.12);
   --scrollbar-track: transparent;
 
-  --file-area-bg: rgba(118, 118, 128, 0.04);
-  --file-area-border: rgba(118, 118, 128, 0.15);
+  --file-area-bg: rgba(118, 118, 128, 0.03);
+  --file-area-border: rgba(118, 118, 128, 0.14);
 
-  --tag-bg: rgba(0, 122, 255, 0.08);
+  --tag-bg: rgba(0, 122, 255, 0.06);
   --tag-text: #007AFF;
 
   --focus-ring: 0 0 0 3px rgba(0, 122, 255, 0.2);

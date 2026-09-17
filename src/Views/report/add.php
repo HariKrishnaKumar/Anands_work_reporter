@@ -11,7 +11,7 @@ require __DIR__ . '/../layouts/main.php';
         Back
     </a>
 
-    <h1 class="heading-lg">Add Today's Work</h1>
+    <h1 class="heading-lg">Add Work Report</h1>
 
     <?php $flash = getFlash(); if ($flash): ?>
         <div class="flash flash-<?= e($flash['type']) ?>" role="alert"><?= e($flash['message']) ?></div>
@@ -28,6 +28,7 @@ require __DIR__ . '/../layouts/main.php';
         <div class="form-group">
             <label class="form-label" for="description">Work Description</label>
             <textarea class="form-input" id="description" name="description" placeholder="Describe what you worked on today..." required minlength="10" maxlength="1000"></textarea>
+            <div class="form-error" id="descError" style="display:none;color:var(--error,#ef4444);font-size:0.85rem;margin-top:4px;" role="alert"></div>
             <div class="form-hint">
                 <span class="char-counter" id="charCounter">0/1000</span>
                 <span>Minimum 10 characters</span>
@@ -66,9 +67,27 @@ $extraScripts = <<<'JS'
   const description = document.getElementById('description');
   let selectedFiles = [];
 
+  const descError = document.getElementById('descError');
+  const form = document.getElementById('addReportForm');
+  
   description.addEventListener('input', () => {
     const len = description.value.length;
     charCounter.textContent = len + '/1000';
+    if (len > 0 && len < 10) {
+      descError.textContent = 'Description must be at least 10 characters (' + len + '/10)';
+      descError.style.display = 'block';
+    } else {
+      descError.style.display = 'none';
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    if (description.value.trim().length < 10) {
+      e.preventDefault();
+      descError.textContent = 'Description must be at least 10 characters';
+      descError.style.display = 'block';
+      description.focus();
+    }
   });
 
   uploadArea.addEventListener('click', () => fileInput.click());

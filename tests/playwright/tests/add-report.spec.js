@@ -13,7 +13,7 @@ test.describe('TEST 3 — Add Work Report', () => {
     await page.waitForURL('**/report/add');
     
     // Title
-    await expect(page.locator('h1')).toContainText('Add Today');
+    await expect(page.locator('h1')).toContainText('Add Work Report');
     
     // Work Date field exists
     await expect(page.locator('#work_date')).toBeVisible();

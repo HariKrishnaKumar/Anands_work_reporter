@@ -11,10 +11,11 @@ module.exports = defineConfig({
   timeout: 60000,
   use: {
     baseURL: 'http://localhost/daily-work-report/public/',
-    headless: false,
-    slowMo: 150,
+    headless: true,
+    slowMo: 50,
     screenshot: 'on',
     trace: 'on-first-retry',
+    actionTimeout: 10000,
   },
   projects: [
     { name: 'Mobile 320',   use: { viewport: { width: 320, height: 568 } } },

@@ -26,11 +26,11 @@ test.describe('TEST 13 — Responsive Testing', () => {
       if (vp.width < 768) {
         // MOBILE: bottom nav visible, no sidebar
         await expect(page.locator('.bottom-nav')).toBeVisible();
-        await expect(page.locator('.nav-item-add')).toBeVisible();
+        await expect(page.locator('.bottom-nav .nav-item').last()).toBeVisible();
         await expect(page.locator('.sidebar')).toBeHidden();
         
         // Navigate to add report via bottom nav
-        await page.click('.nav-item-add');
+        await page.click('.bottom-nav .nav-item >> text=Add');
       } else {
         // TABLET / DESKTOP: sidebar visible, bottom nav hidden
         await expect(page.locator('.sidebar')).toBeVisible();

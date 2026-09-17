@@ -1,0 +1,1043 @@
+You are working on an Android application that is the mobile client for my existing Daily Work Report web application.
+
+EXISTING WEB PROJECT PATH:
+
+C:\Users\B_Hari_Krishna_Kumar\Documents\Anand\employee task\daily-work-report
+
+IMPORTANT:
+You MUST inspect this existing project before writing Android code.
+
+The existing project is the SOURCE OF TRUTH for:
+- UI
+- colors
+- typography
+- spacing
+- navigation
+- wording
+- report structure
+- form fields
+- attachment behavior
+- light/dark themes
+- user workflow
+
+DO NOT invent a new UI.
+DO NOT redesign the application.
+DO NOT substitute a generic Android Material dashboard.
+DO NOT approximate the UI if the existing CSS/PHP views already define it.
+
+The Android application must reproduce the existing web application's UI and UX as closely as technically possible.
+
+============================================================
+1. TECHNOLOGY REQUIREMENT
+============================================================
+
+Build the Android application using:
+
+- Android Studio
+- Java ONLY
+- XML layouts
+- Android Views
+- Gradle
+- AndroidX
+- Material Components only where they help reproduce the existing UI
+
+DO NOT use:
+- Kotlin
+- Jetpack Compose
+- Flutter
+- React Native
+- WebView as the primary application UI
+- cross-platform frameworks
+
+The final application must be a native Android application written in Java.
+
+============================================================
+2. FIRST TASK — INSPECT THE EXISTING PROJECT
+============================================================
+
+Before creating Android files, inspect:
+
+C:\Users\B_Hari_Krishna_Kumar\Documents\Anand\employee task\daily-work-report
+
+Inspect at minimum:
+
+public/assets/css/variables.css
+public/assets/css/base.css
+public/assets/css/components.css
+public/assets/css/responsive.css
+public/assets/js/app.js
+
+src/Views/layouts/main.php
+src/Views/layouts/footer.php
+
+src/Views/home/index.php
+src/Views/report/add.php
+src/Views/report/review.php
+src/Views/report/success.php
+src/Views/report/view.php
+src/Views/report/not_found.php
+src/Views/auth/login.php
+
+Also inspect:
+
+- existing images
+- SVG icons
+- fonts
+- logos
+- JavaScript interactions
+- theme implementation
+- navigation implementation
+- existing API endpoints, if any
+- existing PHP routes
+- authentication implementation
+- database schema
+- file upload implementation
+- Google Sheets integration
+
+Do not modify the existing web project while creating the Android application unless explicitly instructed.
+
+============================================================
+3. CREATE AN ANDROID IMPLEMENTATION SPECIFICATION FIRST
+============================================================
+
+Before writing code, produce a concise internal implementation specification based on the inspected project.
+
+Map:
+
+WEB ELEMENT
+→
+ANDROID ELEMENT
+
+For example:
+
+CSS variable
+→ Android color/dimension resource
+
+CSS typography
+→ Android TextView style
+
+CSS card
+→ Android CardView/MaterialCardView/custom drawable
+
+CSS button
+→ Android Button/MaterialButton/custom background
+
+CSS navigation
+→ Android BottomNavigation/custom navigation
+
+CSS theme
+→ Android Light/Dark theme resources
+
+CSS animation
+→ Android Animator/Transition
+
+Do not blindly convert CSS to Android.
+Reproduce the VISUAL RESULT.
+
+============================================================
+4. EXACT UI REPRODUCTION
+============================================================
+
+The Android application must visually match the current Daily Work Report web application.
+
+Use the existing CSS as the primary reference.
+
+Pay particular attention to:
+
+- exact background colors
+- surface colors
+- text colors
+- blue primary color
+- muted text
+- border colors
+- corner radius
+- card elevation
+- shadows
+- spacing
+- padding
+- margins
+- icon sizes
+- button heights
+- navigation height
+- typography weights
+- typography sizes
+- line heights
+- alignment
+- upload area
+- empty state
+- modal appearance
+- success animation
+
+Do not replace the existing design with default Material 3 styling.
+
+If Android's default component looks different from the web UI, create a custom XML drawable/style so the Android UI matches the web design.
+
+============================================================
+5. CURRENT DESIGN LANGUAGE
+============================================================
+
+The application uses:
+
+- premium productivity-app design
+- Apple-inspired visual hierarchy
+- controlled glassmorphism
+- clean SaaS structure
+- subtle depth
+- Poppins typography
+- Century Gothic selectively for display text where available
+- light and dark themes
+- subtle animations
+- rounded cards
+- soft shadows
+- restrained visual effects
+
+Do NOT exaggerate these effects.
+
+The target is:
+
+70% clean modern productivity UI
+20% controlled glass/depth
+10% subtle motion
+
+Avoid:
+
+- gaming UI
+- excessive gradients
+- neon glow
+- excessive glass
+- huge typography
+- oversized buttons
+- excessive rounded/puffy components
+- excessive animations
+
+============================================================
+6. MOBILE UI
+============================================================
+
+The Android application is primarily a mobile application.
+
+Reproduce the mobile web UI exactly.
+
+Primary screens:
+
+1. Login
+2. Home / My Work Reports
+3. Add Work Report
+4. Review
+5. Confirmation
+6. Success
+7. Report Details
+
+============================================================
+7. MOBILE HEADER
+============================================================
+
+Reproduce the existing mobile header.
+
+It contains:
+
+- Daily Work Report logo/icon
+- Daily Work Report title
+- Theme switcher
+- Logout
+
+Do not add:
+- profile
+- hamburger menu unless the existing design requires it
+- notifications
+- search
+- unnecessary icons
+
+Use the existing SVG/icon assets where available.
+
+============================================================
+8. THEME SWITCHER
+============================================================
+
+The Android app must have the same concept as the current web UI.
+
+Use a compact premium pill-style theme switcher.
+
+It must support:
+
+SYSTEM
+LIGHT
+DARK
+
+If the existing web implementation only exposes light/dark, preserve that behavior.
+
+Required:
+
+- animated thumb/indicator
+- smooth transition
+- correct selected state
+- persistent preference
+- system theme detection
+- accessibility
+- minimum 44dp touch target
+
+Use Android SharedPreferences/DataStore equivalent appropriate for Java.
+
+Do not create a huge toggle.
+
+============================================================
+9. HOME SCREEN
+============================================================
+
+The Home screen must show ALL work reports belonging to the currently authenticated user.
+
+Newest report first.
+
+Structure:
+
+Header
+↓
+Greeting
+↓
+User name
+↓
+Current date
+↓
+"Here is your submitted work."
+↓
+Add Work Report CTA
+↓
+"My Work Reports"
+↓
+Report list
+↓
+Navigation
+
+Do NOT add:
+
+- analytics
+- charts
+- priority
+- categories
+- task status
+- project management
+- profile
+- notifications
+
+The Home screen is NOT a dashboard.
+
+It is a work-report history screen.
+
+============================================================
+10. REPORT CARD
+============================================================
+
+Each report card must reproduce the existing web card.
+
+Show:
+
+- Work Date
+- Work Description preview
+- Attachment count/indicator when applicable
+- View action
+
+Newest report must appear first.
+
+Cards are READ-ONLY.
+
+There must be NO Edit option.
+
+There must be NO Delete option.
+
+Tapping a card opens Report Details.
+
+============================================================
+11. ADD WORK REPORT
+============================================================
+
+Reproduce the existing Add Work Report screen.
+
+Fields:
+
+WORK DATE
+- required
+- default to today's date
+- allow date selection
+
+WORK DESCRIPTION
+- required
+- existing character limit
+- existing minimum character requirement
+- preserve the existing validation rules
+
+ATTACH FILES
+- optional
+
+Supported file types must match the existing application:
+
+- images
+- PDF
+- DOC
+- DOCX
+
+Allow multiple files.
+
+Selected files must show:
+
+- filename
+- file type
+- size
+- remove action
+
+The Android UI must visually reproduce the existing upload area.
+
+Use Android's Storage Access Framework / Activity Result APIs rather than requesting unnecessary broad storage permissions.
+
+============================================================
+12. REVIEW SCREEN
+============================================================
+
+Reproduce the existing Review screen.
+
+Show:
+
+- selected Work Date
+- Work Description
+- selected attachments
+- attachment metadata
+
+Actions:
+
+Back
+Save
+
+The review screen is read-only.
+
+============================================================
+13. CONFIRMATION
+============================================================
+
+Before saving, display the same confirmation concept as the web application.
+
+The user must explicitly confirm the save.
+
+Use a custom-styled Android dialog if necessary to visually match the web modal.
+
+============================================================
+14. SUCCESS SCREEN
+============================================================
+
+After successful save:
+
+Show:
+
+- success checkmark
+- success message
+- appropriate summary
+- next action buttons
+
+Use a subtle animated checkmark.
+
+Do not use GIFs.
+
+Use Android vector drawable / animation.
+
+============================================================
+15. REPORT DETAILS
+============================================================
+
+Report Details must be READ ONLY.
+
+Show:
+
+- Work Date
+- Work Description
+- Attachments
+- file information
+- appropriate preview/download action if supported by the backend
+
+There must be:
+
+NO EDIT BUTTON
+NO DELETE BUTTON
+
+============================================================
+16. NAVIGATION
+============================================================
+
+The mobile navigation must reproduce the existing web navigation.
+
+Current navigation concept:
+
+Home
++
+Add Work Report
+
+Use a premium floating navigation container.
+
+The active navigation indicator must animate.
+
+HOME:
+
+Home active
+Add inactive
+
+ADD WORK REPORT:
+
+Add active
+Home inactive
+
+The active pill/background should smoothly move between the two positions.
+
+Use approximately:
+
+180–280ms
+
+with a smooth easing curve.
+
+Do NOT make the + button permanently blue.
+
+Do NOT show both navigation items as active.
+
+Do not add Profile.
+
+Do not add Settings unless already present in the existing application.
+
+============================================================
+17. ANDROID RESPONSIVE BEHAVIOR
+============================================================
+
+Although the Android application is mobile-first, support:
+
+- small Android phones
+- normal phones
+- large phones
+- portrait orientation
+
+Use dp/sp correctly.
+
+Do not hard-code pixel values.
+
+The visual proportions must remain consistent with the web design.
+
+Test at approximately:
+
+320dp equivalent
+360dp
+390dp
+411dp+
+
+Also test Android system font scaling.
+
+============================================================
+18. BACKEND / API
+============================================================
+
+IMPORTANT:
+
+The Android application must NOT directly access MariaDB.
+
+It must communicate with the existing PHP backend through secure HTTP APIs.
+
+Architecture:
+
+Android App
+    ↓
+PHP REST API
+    ↓
+MariaDB
+    ↓
+Google Sheets synchronization
+
+Files:
+
+Android
+    ↓
+PHP API
+    ↓
+MariaDB LONGBLOB
+
+Do NOT put database credentials in the Android application.
+
+Do NOT connect Android directly to MySQL/MariaDB.
+
+Do NOT connect Android directly to Google Sheets.
+
+============================================================
+19. API INSPECTION BEFORE IMPLEMENTATION
+============================================================
+
+Before creating Retrofit interfaces or API calls:
+
+Inspect the existing PHP project and determine whether API endpoints already exist.
+
+If they exist:
+- use the existing endpoints
+- document request/response formats
+- do not invent alternative endpoints
+
+If APIs do NOT exist:
+DO NOT silently invent fake endpoints and claim the app works.
+
+Instead:
+
+1. Identify the required API endpoints.
+2. Document the exact endpoint contract required by Android.
+3. Tell me which PHP backend endpoints need to be implemented.
+
+Potential API requirements:
+
+Authentication/session
+GET reports
+GET report details
+POST report
+POST/upload report files
+GET file/preview/download
+
+But use the ACTUAL existing backend architecture if available.
+
+============================================================
+20. AUTHENTICATION
+============================================================
+
+The web application uses:
+
+ZOHO ONLY
+
+Do NOT add:
+
+Google Login
+Firebase Authentication
+Facebook Login
+email/password authentication
+
+The Android app must respect the existing Zoho authentication architecture.
+
+Do not ask the user for their Zoho password inside the Android app.
+
+If the existing PHP application already provides a secure OAuth/session mechanism suitable for Android, use it.
+
+If Android OAuth integration requires a backend change, document it before implementing.
+
+Never store Zoho passwords.
+
+============================================================
+21. NETWORKING
+============================================================
+
+Use a standard Java networking architecture such as:
+
+Retrofit
++
+OkHttp
++
+Gson/Moshi equivalent appropriate for Java
+
+Use:
+
+Repository
+↓
+ViewModel
+↓
+Activity/Fragment
+
+Keep network code separate from UI.
+
+Do not put HTTP requests directly inside button click handlers.
+
+Handle:
+
+- loading
+- success
+- empty state
+- network error
+- authentication failure
+- server error
+- timeout
+- file upload failure
+
+============================================================
+22. ARCHITECTURE
+============================================================
+
+Use a clean maintainable Android structure.
+
+Recommended:
+
+app/
+├── data/
+│   ├── api/
+│   ├── model/
+│   ├── repository/
+│   └── local/
+│
+├── ui/
+│   ├── auth/
+│   ├── home/
+│   ├── report/
+│   ├── review/
+│   ├── success/
+│   └── details/
+│
+├── utils/
+│
+└── MainActivity.java
+
+Use Java.
+
+Use ViewModel where appropriate.
+
+Do not over-engineer the project.
+
+============================================================
+23. OFFLINE / LOCAL CACHE
+============================================================
+
+Do not invent an offline-first system unless the existing requirements require it.
+
+For the first version:
+
+Server is the source of truth.
+
+A lightweight local cache may be used only to improve UX.
+
+Do not allow stale cached reports to appear as if they were newly saved server reports.
+
+============================================================
+24. SECURITY
+============================================================
+
+Never store:
+
+- database credentials
+- Google service-account credentials
+- Google Sheets credentials
+- Zoho client secrets
+- server secrets
+
+inside the Android application.
+
+All authorization must happen server-side.
+
+A user must only be able to:
+
+- retrieve their own reports
+- retrieve their own attachments
+- create their own reports
+
+Never trust:
+
+user_id
+report_id
+file_id
+
+from the Android client for authorization.
+
+The PHP backend must validate ownership.
+
+============================================================
+25. FILE UPLOAD
+============================================================
+
+When uploading attachments:
+
+- use multipart/form-data
+- preserve original filename
+- preserve MIME type
+- preserve file size
+- send actual binary file data
+
+The backend currently stores files in MariaDB as LONGBLOB.
+
+The Android app must not assume that the files are stored on a local server filesystem.
+
+Use the API.
+
+============================================================
+26. LOADING / EMPTY / ERROR STATES
+============================================================
+
+Implement polished UI states matching the web application's design.
+
+Home:
+
+Loading
+→ skeleton/progress appropriate to existing visual language
+
+No reports:
+
+Show existing empty-state design.
+
+Error:
+
+Show clean error state with retry.
+
+Upload failure:
+
+Show clear error.
+
+Save failure:
+
+Do not show Success.
+
+Only show Success after the server confirms successful save.
+
+============================================================
+27. ACCESSIBILITY
+============================================================
+
+Maintain:
+
+- minimum 44dp touch targets
+- content descriptions for icons
+- readable contrast
+- keyboard/accessibility support where applicable
+- TalkBack-friendly controls
+- scalable text
+- reduced motion consideration
+
+Do not rely only on color to indicate active state.
+
+============================================================
+28. ANIMATIONS
+============================================================
+
+Animations should reproduce the web application's visual language.
+
+Use:
+
+- subtle page entry
+- navigation pill movement
+- button press feedback
+- theme-switcher movement
+- success checkmark
+- card interaction
+
+Do not use:
+
+- excessive bouncing
+- complicated choreography
+- Lottie unless genuinely necessary
+- unnecessary animation everywhere
+
+Respect reduced-motion accessibility where possible.
+
+============================================================
+29. ASSETS AND FONTS
+============================================================
+
+Inspect:
+
+public/assets/fonts/
+public/assets/images/
+public/assets/icons/
+
+Reuse existing assets wherever possible.
+
+For Poppins:
+- if the existing WOFF2 files can be legally and technically reused in Android, convert/use an appropriate Android font resource.
+- otherwise determine the correct Android-compatible font asset.
+
+Do not introduce a visually different font.
+
+For Century Gothic:
+- do not assume it is legally redistributable.
+- if the project already contains a licensed font asset, inspect and use it.
+- otherwise use the existing fallback strategy rather than downloading an unlicensed font.
+
+============================================================
+30. WEB UI ↔ ANDROID UI VALIDATION
+============================================================
+
+For every major screen:
+
+Compare the Android screen against the existing web implementation.
+
+Check:
+
+- layout
+- alignment
+- spacing
+- typography
+- colors
+- icons
+- card sizes
+- button sizes
+- navigation
+- theme
+- animations
+
+The goal is NOT merely functional equivalence.
+
+The goal is visual consistency.
+
+============================================================
+31. DEVELOPMENT PHASES
+============================================================
+
+Work in this order.
+
+PHASE 1:
+Inspect the entire existing Daily Work Report project.
+
+PHASE 2:
+Create Android UI specification.
+
+PHASE 3:
+Create Android Studio Java project structure.
+
+PHASE 4:
+Implement theme system and design tokens.
+
+PHASE 5:
+Implement Login.
+
+PHASE 6:
+Implement Home.
+
+PHASE 7:
+Implement Add Work Report.
+
+PHASE 8:
+Implement attachment selection.
+
+PHASE 9:
+Implement Review.
+
+PHASE 10:
+Implement confirmation.
+
+PHASE 11:
+Implement Save API.
+
+PHASE 12:
+Implement Success.
+
+PHASE 13:
+Implement Report Details.
+
+PHASE 14:
+Implement navigation animations.
+
+PHASE 15:
+Implement error/loading/empty states.
+
+PHASE 16:
+Connect all screens to the actual PHP API.
+
+PHASE 17:
+Test with the real backend.
+
+PHASE 18:
+Visual comparison against the web UI.
+
+============================================================
+32. IMPORTANT DEVELOPMENT RULE
+============================================================
+
+DO NOT implement the entire application in one giant step.
+
+After inspecting the existing project, first tell me:
+
+1. What UI components were found.
+2. What CSS tokens were found.
+3. What screens were found.
+4. What API endpoints currently exist.
+5. What backend functionality is missing for Android.
+6. What Android architecture you recommend.
+7. What files you plan to create.
+
+Then wait for approval before making major code changes.
+
+============================================================
+33. TESTING
+============================================================
+
+Use Android Studio testing tools.
+
+Test:
+
+- Login
+- Home
+- Add Report
+- Date selection
+- Description validation
+- File selection
+- Multiple attachments
+- Remove attachment
+- Review
+- Confirmation
+- Save
+- Success
+- Home refresh
+- Report details
+- Read-only behavior
+- Theme switching
+- Theme persistence
+- Navigation active state
+- Network failures
+- Authentication failure
+- File upload failure
+
+Test on:
+
+- Android emulator
+- physical Android device if available
+
+Test both:
+
+LIGHT
+DARK
+
+============================================================
+34. FINAL ACCEPTANCE CRITERIA
+============================================================
+
+The Android application is NOT considered complete unless:
+
+1. It is written entirely in Java.
+2. It uses native Android XML layouts.
+3. It does not use Compose.
+4. It does not use WebView as the main UI.
+5. It reproduces the existing Daily Work Report UI.
+6. Light theme matches the web design.
+7. Dark theme matches the web design.
+8. Theme switcher works and animates.
+9. Navigation active pill works.
+10. Home displays the authenticated user's reports.
+11. Reports are newest first.
+12. Reports are read-only.
+13. Add Work Report works.
+14. Attachments work.
+15. Review works.
+16. Confirmation works.
+17. Save works through the PHP backend.
+18. Success only appears after confirmed server success.
+19. Report details work.
+20. User authorization is enforced server-side.
+21. Android never connects directly to MariaDB.
+22. Android never contains server credentials.
+23. Google Sheets credentials are never included.
+24. Zoho remains the only authentication provider.
+25. No unrelated features are added.
+26. No major visual deviation from the existing web UI remains.
+
+============================================================
+35. MOST IMPORTANT INSTRUCTION
+============================================================
+
+DO NOT GUESS.
+
+If something exists in the existing project, inspect and reuse it.
+
+If something does not exist, explicitly tell me.
+
+If an API endpoint is missing, do not create a fake implementation and claim it is connected.
+
+If the existing CSS conflicts with a generic Android design recommendation, the existing Daily Work Report design takes priority.
+
+The existing project is:
+
+C:\Users\B_Hari_Krishna_Kumar\Documents\Anand\employee task\daily-work-report
+
+Use that project as the source of truth.
+
+FIRST ACTION:
+Inspect the existing project completely and report your findings and proposed Android file structure.
+
+DO NOT start major implementation until the inspection is complete.
