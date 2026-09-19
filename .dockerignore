@@ -48,6 +48,9 @@ storage/uploads/*
 storage/temp/*
 storage/google-credentials.json
 
+# SSL certs (uploaded via Render Secret Files)
+docker/aiven-ca.pem
+
 # Sample files
 sample/
 
