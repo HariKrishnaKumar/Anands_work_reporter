@@ -21,16 +21,6 @@ require __DIR__ . '/../layouts/main.php';
     <!-- RIGHT: Matte frosted glass login panel -->
     <div class="login-panel">
         <div class="login-form-glass">
-            <div class="login-form-top">
-                <button class="theme-switcher login-theme-switcher" role="switch" aria-checked="false" aria-label="Toggle theme" tabindex="0">
-                    <div class="theme-switcher-icons">
-                        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                    </div>
-                    <div class="theme-switcher-thumb"></div>
-                </button>
-            </div>
-
             <div class="login-form-content">
                 <div class="login-form-logo">
                     <img src="<?= url('assets/images/logo.png') ?>" alt="Yajurvedh logo" width="28" height="28" />
@@ -38,38 +28,31 @@ require __DIR__ . '/../layouts/main.php';
                 </div>
                 <p class="login-subtitle">Sign in with your Zoho account to continue.</p>
 
-                <?php $flash = getFlash(); if ($flash): ?>
-                    <div class="login-error"><?= e($flash['message']) ?></div>
-                <?php endif; ?>
+                <!-- Error toast (replaces inline flash + inline error div) -->
+                <div id="loginToast" class="login-toast" style="display:none;" role="alert">
+                    <svg class="login-toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span id="loginToastMsg"></span>
+                </div>
 
                 <form class="login-form" id="loginForm" method="POST" action="<?= url('login') ?>">
                     <?= csrfField() ?>
-                    <div id="loginError" style="display:none;color:var(--error,#ef4444);font-size:0.85rem;margin-bottom:8px;text-align:center;" role="alert"></div>
 
                     <div class="form-group">
                         <label class="form-label" for="email">Email Address</label>
                         <input class="form-input" type="email" id="email" name="email" placeholder="you@company.com" required autocomplete="email">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group password-group">
                         <label class="form-label" for="password">Password</label>
-                        <input class="form-input" type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                        <input class="form-input password-input" type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                        <button type="button" class="password-toggle-btn" id="passwordToggle" aria-label="Show password">
+                            <svg class="icon-eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <svg class="icon-eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        </button>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-full btn-lg">Login ?</button>
+                    <button type="submit" class="btn btn-primary btn-full btn-lg">Login</button>
                 </form>
-                <script>
-                document.getElementById("loginForm").addEventListener("submit", function(e) {
-                    var email = document.getElementById("email").value.trim();
-                    var pass = document.getElementById("password").value;
-                    var err = document.getElementById("loginError");
-                    if (!email || !pass) {
-                        e.preventDefault();
-                        err.textContent = "Email and password are required.";
-                        err.style.display = "block";
-                    }
-                });
-                </script>
 
                 <?php if (isDevEnvironment()): ?>
                 <div class="login-divider">OR</div>
@@ -79,10 +62,69 @@ require __DIR__ . '/../layouts/main.php';
                 </a>
                 <?php endif; ?>
 
-                <p class="login-footer-text">Secure · Internal Use Only</p>
+                <p class="login-footer-text">Secure &middot; Internal Use Only</p>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+(function() {
+  // --- Password toggle ---
+  var toggleBtn = document.getElementById('passwordToggle');
+  var passInput = document.getElementById('password');
+  var iconOpen = toggleBtn ? toggleBtn.querySelector('.icon-eye-open') : null;
+  var iconClosed = toggleBtn ? toggleBtn.querySelector('.icon-eye-closed') : null;
+
+  if (toggleBtn && passInput) {
+    toggleBtn.addEventListener('click', function() {
+      var isPassword = passInput.type === 'password';
+      passInput.type = isPassword ? 'text' : 'password';
+      if (iconOpen) iconOpen.style.display = isPassword ? 'none' : '';
+      if (iconClosed) iconClosed.style.display = isPassword ? '' : 'none';
+      toggleBtn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+    });
+  }
+
+  // --- Error toast helper ---
+  function showToast(msg, duration) {
+    var toast = document.getElementById('loginToast');
+    var toastMsg = document.getElementById('loginToastMsg');
+    if (!toast || !toastMsg) return;
+    toastMsg.textContent = msg;
+    toast.style.display = 'flex';
+    toast.classList.remove('toast-hide');
+    toast.classList.add('toast-show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(function() {
+      toast.classList.remove('toast-show');
+      toast.classList.add('toast-hide');
+      setTimeout(function() { toast.style.display = 'none'; }, 400);
+    }, duration || 4000);
+  }
+
+  // --- Show server-side flash error as toast ---
+  <?php $flash = getFlash(); if ($flash): ?>
+  showToast(<?= json_encode($flash['message']) ?>);
+  <?php endif; ?>
+
+  // --- Client-side validation ---
+  var form = document.getElementById('loginForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      var email = document.getElementById('email').value.trim();
+      var pass = document.getElementById('password').value;
+      if (!email || !pass) {
+        e.preventDefault();
+        showToast('Email and password are required.');
+        return;
+      }
+    });
+  }
+
+  // Expose showToast globally for any future use
+  window.showToast = showToast;
+})();
+</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>

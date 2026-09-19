@@ -229,7 +229,6 @@
       'Make today count.',
       'Progress takes patience.',
       'Focus. Build. Improve.',
-      'Do the work. Grow.',
       'Consistency beats intensity.'
     ];
 

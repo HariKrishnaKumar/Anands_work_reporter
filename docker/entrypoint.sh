@@ -17,61 +17,47 @@ sed -i "s/\${APACHE_PORT}/$PORT/g" /etc/apache2/sites-available/000-default.conf
 echo "[1/5] Apache configured to listen on port $PORT"
 
 # --- 2. Aiven SSL/TLS certificate handling ---
-# DB_SSL_CA can be: file path, PEM text, or base64-encoded DER
-# We always write a PEM file to /etc/ssl/aiven-ca.pem
-CERT_FILE="/etc/ssl/aiven-ca.pem"
-CERT_WRITTEN=false
+# Priority: Render Secret File > DB_SSL_CA file path > PEM text > base64 DER
+CERT_FILE=""
+SECRET_FILE="/etc/secrets/aiven-ca.pem"
 
-if [ -n "$DB_SSL_CA" ]; then
+if [ -f "$SECRET_FILE" ]; then
+    # Render Secret File exists — always prefer this (it's the actual PEM file)
+    CERT_FILE="$SECRET_FILE"
+    echo "[2/5] SSL cert from Render Secret File: $SECRET_FILE"
+elif [ -n "$DB_SSL_CA" ]; then
     if [ -f "$DB_SSL_CA" ]; then
-        # Already a file path — use directly
         CERT_FILE="$DB_SSL_CA"
-        CERT_WRITTEN=true
-        echo "[2/5] SSL cert is a file path: $DB_SSL_CA"
+        echo "[2/5] SSL cert from env file path: $DB_SSL_CA"
     elif echo "$DB_SSL_CA" | head -c 30 | grep -q "BEGIN CERTIFICATE"; then
-        # PEM format (with headers) — write directly
+        CERT_FILE="/etc/ssl/aiven-ca.pem"
         echo "$DB_SSL_CA" > "$CERT_FILE"
         export DB_SSL_CA="$CERT_FILE"
-        CERT_WRITTEN=true
-        echo "[2/5] SSL cert is PEM format — written to $CERT_FILE"
+        echo "[2/5] SSL cert is PEM text — written to $CERT_FILE"
     else
         # Base64-encoded DER — decode to PEM
         echo "[2/5] Decoding base64 SSL certificate..."
+        CERT_FILE="/etc/ssl/aiven-ca.pem"
         CLEAN_B64=$(echo "$DB_SSL_CA" | tr -d '[:space:]')
         echo "$CLEAN_B64" | base64 -d 2>/dev/null > /tmp/aiven-ca.der || true
 
         if [ -s /tmp/aiven-ca.der ]; then
-            # Try to convert DER to PEM
             if openssl x509 -inform DER -in /tmp/aiven-ca.der -out "$CERT_FILE" 2>/dev/null; then
-                export DB_SSL_CA="$CERT_FILE"
-                CERT_WRITTEN=true
                 echo "[2/5] Converted DER to PEM"
             elif openssl x509 -inform PEM -in /tmp/aiven-ca.der -out "$CERT_FILE" 2>/dev/null; then
-                export DB_SSL_CA="$CERT_FILE"
-                CERT_WRITTEN=true
                 echo "[2/5] Certificate was already PEM"
             else
-                # Fallback: try with base64 re-encoding
-                # If the content doesn't look like DER, try treating it as base64 text
-                if openssl x509 -inform PEM -outform PEM -in /tmp/aiven-ca.der -out "$CERT_FILE" 2>/dev/null; then
-                    export DB_SSL_CA="$CERT_FILE"
-                    CERT_WRITTEN=true
-                    echo "[2/5] Converted to PEM (method 3)"
-                else
-                    # Last resort: write raw bytes, PHP will handle conversion
-                    cp /tmp/aiven-ca.der "$CERT_FILE"
-                    export DB_SSL_CA="$CERT_FILE"
-                    CERT_WRITTEN=true
-                    echo "[2/5] Wrote raw certificate, PHP will handle conversion"
-                fi
+                echo "[2/5] WARNING: Could not convert certificate — SSL may not work for CLI"
+                CERT_FILE=""
             fi
+            rm -f /tmp/aiven-ca.der
         else
             echo "[2/5] WARNING: Could not decode DB_SSL_CA"
+            CERT_FILE=""
         fi
-        rm -f /tmp/aiven-ca.der
     fi
 else
-    echo "[2/5] No DB_SSL_CA set — SSL disabled"
+    echo "[2/5] No SSL cert found (no Secret File, no DB_SSL_CA)"
 fi
 
 # --- 3. Create storage directories ---
@@ -98,10 +84,18 @@ if [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ] && [ -n "
         echo "  The app will retry DNS when handling requests."
     fi
 
-    # Build MySQL connection args
+    # Build MySQL connection args — prefer Secret File cert
     MYSQL_SSL=""
-    if [ "$CERT_WRITTEN" = true ] && [ -f "$CERT_FILE" ]; then
-        MYSQL_SSL="--ssl-ca=$CERT_FILE"
+    if [ -n "$CERT_FILE" ] && [ -f "$CERT_FILE" ]; then
+        # Verify the cert file is valid PEM before using it
+        if head -1 "$CERT_FILE" | grep -q "BEGIN CERTIFICATE"; then
+            MYSQL_SSL="--ssl-ca=$CERT_FILE --ssl-mode=REQUIRED"
+            echo "  Using SSL cert: $CERT_FILE"
+        else
+            echo "  WARNING: Cert file exists but is not PEM format — trying without SSL"
+        fi
+    else
+        echo "  WARNING: No SSL cert file available — Aiven may reject connection"
     fi
 
     # Try to connect and check if users table exists
