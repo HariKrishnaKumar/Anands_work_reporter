@@ -112,8 +112,17 @@ if [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ] && [ -n "
     if echo "$TABLE_CHECK" | grep -q "CONNECT_FAILED\|Access denied\|unknown\|error\|failed"; then
         echo "  MySQL connection: FAILED"
         echo "  Error: $TABLE_CHECK"
-        echo "  Schema will NOT be seeded. Apache will start anyway."
-        echo "  The PHP app will retry the connection when handling requests."
+        echo "  Trying PHP-based schema seeder as fallback..."
+        if [ -f /var/www/html/scripts/seed-schema.php ]; then
+            php /var/www/html/scripts/seed-schema.php 2>&1
+            if [ $? -eq 0 ]; then
+                echo "  PHP seeder: SUCCESS"
+            else
+                echo "  PHP seeder: FAILED — schema will be seeded when the app handles requests"
+            fi
+        else
+            echo "  No seed-schema.php found — schema will be seeded when the app handles requests"
+        fi
     elif [ "$TABLE_CHECK" = "0" ]; then
         echo "  Users table not found — seeding schema..."
         SCHEMA_CLEAN=$(sed '/^USE /d; /^CREATE DATABASE/d' /var/www/html/database/schema.sql)
@@ -126,8 +135,17 @@ if [ -n "$DB_HOST" ] && [ -n "$DB_DATABASE" ] && [ -n "$DB_USERNAME" ] && [ -n "
             "$DB_DATABASE" 2>&1 || echo "SEED_FAILED")
 
         if echo "$SEED_RESULT" | grep -q "SEED_FAILED"; then
-            echo "  Schema seeding: FAILED"
+            echo "  Schema seeding via mysql CLI: FAILED"
             echo "  Error: $SEED_RESULT"
+            echo "  Trying PHP-based schema seeder as fallback..."
+            if [ -f /var/www/html/scripts/seed-schema.php ]; then
+                php /var/www/html/scripts/seed-schema.php 2>&1
+                if [ $? -eq 0 ]; then
+                    echo "  PHP seeder: SUCCESS"
+                else
+                    echo "  PHP seeder: FAILED"
+                fi
+            fi
         else
             echo "  Schema seeding: SUCCESS (3 tables + 3 users created)"
         fi
