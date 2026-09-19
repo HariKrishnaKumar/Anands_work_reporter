@@ -57,53 +57,67 @@ class Database
     }
 
     /**
-     * Resolve SSL CA certificate to a file path.
-     * Handles: file path, PEM text, base64-encoded DER.
+     * Resolve SSL CA certificate to a valid PEM file path.
+     * Handles: PEM file, DER file, PEM text, base64-encoded DER.
      * Returns path to a PEM file, or null on failure.
      */
     private static function resolveSslCa(string $sslCa): ?string
     {
-        // 1. If it's a file path that exists, use it directly
-        if (file_exists($sslCa)) {
-            return $sslCa;
-        }
-
         $tempDir = sys_get_temp_dir();
         $hash = md5($sslCa);
 
-        // 2. If it starts with "-----BEGIN", it's PEM text
+        // 1. If it's a file path that exists, check if it's PEM or DER
+        if (file_exists($sslCa)) {
+            $content = file_get_contents($sslCa);
+            if ($content === false || strlen($content) < 50) {
+                return null;
+            }
+
+            // Already PEM? Use directly
+            if (str_starts_with(trim($content), "-----BEGIN CERTIFICATE-----")) {
+                return $sslCa;
+            }
+
+            // File exists but contains DER — convert to PEM
+            return self::convertDerToPem($content, $tempDir, $hash) ?? $sslCa;
+        }
+
+        // 2. If it starts with "-----BEGIN", it's inline PEM text
         if (str_starts_with(trim($sslCa), "-----BEGIN CERTIFICATE-----")) {
             $pemFile = "$tempDir/aiven-ca-$hash.pem";
             file_put_contents($pemFile, $sslCa);
-            if (filesize($pemFile) > 0) {
-                return $pemFile;
-            }
+            return filesize($pemFile) > 0 ? $pemFile : null;
         }
 
-        // 3. Try base64 decode → could be DER binary
+        // 3. Try base64 decode
         $decoded = base64_decode($sslCa, true);
         if ($decoded === false || strlen($decoded) < 50) {
             return null;
         }
 
-        // Check if decoded content is actually PEM text (base64-encoded PEM)
-        $decodedText = trim($decoded);
-        if (str_starts_with($decodedText, "-----BEGIN CERTIFICATE-----")) {
+        // Might be base64-encoded PEM text
+        if (str_starts_with(trim($decoded), "-----BEGIN CERTIFICATE-----")) {
             $pemFile = "$tempDir/aiven-ca-$hash.pem";
-            file_put_contents($pemFile, $decodedText);
-            if (filesize($pemFile) > 0) {
-                return $pemFile;
-            }
+            file_put_contents($pemFile, trim($decoded));
+            return filesize($pemFile) > 0 ? $pemFile : null;
         }
 
-        // It's DER binary — convert to PEM using PHP's openssl functions
-        $derFile = "$tempDir/aiven-ca-$hash.der";
-        file_put_contents($derFile, $decoded);
+        // It's DER binary — convert to PEM
+        return self::convertDerToPem($decoded, $tempDir, $hash);
+    }
 
-        // Try reading as DER certificate
+    /**
+     * Convert DER binary certificate to PEM file.
+     */
+    private static function convertDerToPem(string $derContent, string $tempDir, string $hash): ?string
+    {
+        $derFile = "$tempDir/aiven-ca-$hash.der";
+        $pemFile = "$tempDir/aiven-ca-$hash.pem";
+        file_put_contents($derFile, $derContent);
+
+        // Method 1: PHP openssl functions
         $cert = @openssl_x509_read($derFile);
         if ($cert !== false) {
-            $pemFile = "$tempDir/aiven-ca-$hash.pem";
             if (@openssl_x509_export($cert, $pemContent) && !empty($pemContent)) {
                 file_put_contents($pemFile, $pemContent);
                 @openssl_x509_free($cert);
@@ -113,9 +127,15 @@ class Database
             @openssl_x509_free($cert);
         }
 
-        // Fallback: try reading the DER file directly as a certificate resource
-        // Some PHP builds accept raw DER via MYSQL_ATTR_SSL_CA
+        // Method 2: openssl CLI (different flags)
+        exec("openssl x509 -inform DER -in " . escapeshellarg($derFile) . " -out " . escapeshellarg($pemFile) . " 2>&1", $output, $exitCode);
+        if ($exitCode === 0 && file_exists($pemFile) && filesize($pemFile) > 0) {
+            @unlink($derFile);
+            return $pemFile;
+        }
+
         @unlink($derFile);
+        @unlink($pemFile);
         return null;
     }
 }

@@ -41,21 +41,29 @@ if [ -n "$DB_SSL_CA" ]; then
         echo "$CLEAN_B64" | base64 -d 2>/dev/null > /tmp/aiven-ca.der || true
 
         if [ -s /tmp/aiven-ca.der ]; then
-            # Try DER→PEM conversion with openssl
+            # Try to convert DER to PEM
             if openssl x509 -inform DER -in /tmp/aiven-ca.der -out "$CERT_FILE" 2>/dev/null; then
                 export DB_SSL_CA="$CERT_FILE"
                 CERT_WRITTEN=true
-                echo "[2/5] Converted DER to PEM — written to $CERT_FILE"
+                echo "[2/5] Converted DER to PEM"
             elif openssl x509 -inform PEM -in /tmp/aiven-ca.der -out "$CERT_FILE" 2>/dev/null; then
                 export DB_SSL_CA="$CERT_FILE"
                 CERT_WRITTEN=true
-                echo "[2/5] Certificate was already PEM — written to $CERT_FILE"
+                echo "[2/5] Certificate was already PEM"
             else
-                # Fallback: write raw bytes, PHP will handle DER→PEM
-                cp /tmp/aiven-ca.der "$CERT_FILE"
-                export DB_SSL_CA="$CERT_FILE"
-                CERT_WRITTEN=true
-                echo "[2/5] OpenSSL conversion failed — wrote raw DER, PHP will handle conversion"
+                # Fallback: try with base64 re-encoding
+                # If the content doesn't look like DER, try treating it as base64 text
+                if openssl x509 -inform PEM -outform PEM -in /tmp/aiven-ca.der -out "$CERT_FILE" 2>/dev/null; then
+                    export DB_SSL_CA="$CERT_FILE"
+                    CERT_WRITTEN=true
+                    echo "[2/5] Converted to PEM (method 3)"
+                else
+                    # Last resort: write raw bytes, PHP will handle conversion
+                    cp /tmp/aiven-ca.der "$CERT_FILE"
+                    export DB_SSL_CA="$CERT_FILE"
+                    CERT_WRITTEN=true
+                    echo "[2/5] Wrote raw certificate, PHP will handle conversion"
+                fi
             fi
         else
             echo "[2/5] WARNING: Could not decode DB_SSL_CA"
