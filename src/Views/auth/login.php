@@ -103,7 +103,16 @@ require __DIR__ . '/../layouts/main.php';
     }, duration || 4000);
   }
 
-  // --- Show server-side flash error as toast ---
+  // --- Show error from URL query param or server-side flash ---
+  var urlParams = new URLSearchParams(window.location.search);
+  var urlError = urlParams.get('error');
+  if (urlError) {
+    showToast(urlError);
+    // Clean the URL so the error doesn't reappear on refresh
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
   <?php $flash = getFlash(); if ($flash): ?>
   showToast(<?= json_encode($flash['message']) ?>);
   <?php endif; ?>

@@ -33,7 +33,7 @@ class AuthController
 
         if (!validateCsrf()) {
             setFlash('error', 'Invalid security token. Please try again.');
-            redirect('login');
+            redirect('login?error=' . urlencode('Invalid security token. Please try again.'));
         }
 
         $email = sanitizeString($_POST['email'] ?? '');
@@ -41,13 +41,13 @@ class AuthController
 
         if (empty($email) || empty($password)) {
             setFlash('error', 'Email and password are required.');
-            redirect('login');
+            redirect('login?error=' . urlencode('Email and password are required.'));
         }
 
         $user = $this->authService->login($email, $password);
         if (!$user) {
             setFlash('error', 'Invalid email or password.');
-            redirect('login');
+            redirect('login?error=' . urlencode('Invalid email or password.'));
         }
 
         // Set session (regenerate ID to prevent session fixation)
