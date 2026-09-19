@@ -126,6 +126,7 @@ $extraScripts = <<<'JS'
 
   function renderFiles() {
     fileList.innerHTML = '';
+    updateFileInput();
     if (selectedFiles.length === 0) return;
     selectedFiles.forEach((f, i) => {
       const item = document.createElement('div');

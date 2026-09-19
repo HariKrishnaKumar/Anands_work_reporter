@@ -2,7 +2,7 @@
 $pageTitle = 'Review Work Report';
 $activeNav = '';
 $draft = $draft ?? $_SESSION['report_draft'] ?? [];
-$files = $files ?? $_SESSION['report_files'] ?? [];
+$files = $_SESSION['report_files'] ?? [];
 require __DIR__ . '/../layouts/main.php';
 ?>
 

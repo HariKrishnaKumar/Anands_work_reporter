@@ -92,6 +92,9 @@ class ReportController
             }
         }
 
+        // Unset $files so review.php reads from $_SESSION['report_files'] instead
+        // of inheriting the raw $_FILES array via require scope sharing
+        unset($files);
         $draft = $_SESSION['report_draft'];
         require __DIR__ . '/../Views/report/review.php';
     }
