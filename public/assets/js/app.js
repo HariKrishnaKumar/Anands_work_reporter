@@ -276,8 +276,8 @@
       }
       // Update quote color
       if (quoteEl) {
-        quoteEl.style.color = isDark ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.7)';
-        quoteEl.style.textShadow = '0 1px 6px ' + shadowColor;
+        quoteEl.style.color = isDark ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.8)';
+        quoteEl.style.textShadow = isDark ? '0 1px 8px rgba(0,0,0,0.7), 0 0 20px rgba(0,0,0,0.3)' : '0 1px 4px rgba(255,255,255,0.4)';
       }
     }
 
